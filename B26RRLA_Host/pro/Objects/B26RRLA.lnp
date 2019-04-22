@@ -1,0 +1,13 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\system.obj",
+".\Objects\bsp_led.obj",
+".\Objects\bsp_timer.obj",
+".\Objects\bsp_uart.obj",
+".\Objects\bsp_btm.obj",
+".\Objects\bsp_key.obj",
+".\Objects\S_TouchKeyCFG.obj",
+"..\lib\SC92F8X6XB_HighSensitive_Lib_T1_V1.0.5.LIB",
+".\Objects\TimeOut.obj" 
+TO ".\Objects\B26RRLA" 
+PRINT(".\Listings\B26RRLA.m51") RAMSIZE(256) 

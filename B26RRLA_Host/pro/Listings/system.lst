@@ -1,0 +1,97 @@
+C51 COMPILER V9.59.0.0   SYSTEM                                                            04/22/2019 10:58:19 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SYSTEM
+OBJECT MODULE PLACED IN .\Objects\system.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\user\system.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;..
+                    -\user) DEBUG OBJECTEXTEND PRINT(.\Listings\system.lst) TABS(7) OBJECT(.\Objects\system.obj)
+
+line level    source
+
+   1          #include "system.h"
+   2          
+   3          
+   4          TIMEOUT_PARA TimeOut_Para[2];
+   5          extern unsigned char SendData1,SendData2;
+   6          
+   7          extern unsigned long Get_Data;
+   8          unsigned char Flag;
+   9          
+  10          void System_Init(void)
+  11          {
+  12   1             if(Flag)
+  13   1             {
+  14   2                    WDTCON |= 0x10;                 //Çå¿´ÃÅ¹·
+  15   2                     OPERCON = 0X00;         //CHKSUMÔËËã
+  16   2                     _nop_();
+  17   2                     TimeOutDet_Init();
+  18   2                     Led_Init();
+  19   2                     Timer_Init();
+  20   2                     Uart1_Init(2,9600);
+  21   2                     Uart2_Init(2,9600);
+  22   2                     Key_Init();
+  23   2                     Btm_Test();
+  24   2                     //EA = 1;
+  25   2             }
+  26   1             TouchKeyInit(); // ´¥¿Ø°´¼ü³õÊ¼»¯
+  27   1              EA = 1;
+  28   1      }
+  29          
+  30          
+  31          void System_Handle(void)
+  32          {
+  33   1             WDTCON |= 0x10;                 //Çå¿´ÃÅ¹·
+  34   1             #if 0
+                     if(TimeOutDet_Check(&TimeOut_Para[0]))
+                     {
+                            TimeOut_Record(&TimeOut_Para[0],500);
+                            Protocol_Send(0XFA,0XFB,0X01);
+                            Protocol2_Send(0xfa,0xfb,0x02);
+                     }     
+                     #else
+  42   1             if(Flag)
+  43   1             {
+  44   2                    Key_Handle();
+  45   2                    if(TimeOutDet_Check(&TimeOut_Para[0]))
+  46   2                    {
+  47   3                           TimeOut_Record(&TimeOut_Para[0],500);
+  48   3                           Protocol_Send(0XFA,0XFB,SendData1);
+  49   3                           Protocol2_Send(0xfa,0xfb,SendData2);
+  50   3                    }  
+  51   2             }
+  52   1             #endif
+  53   1             
+  54   1             if(SOCAPI_TouchKeyStatus&0x80) // ÖØÒª²½Öè 2: ´¥Ãþ¼üÉ¨ÃèÒ»ÂÖ±êÖ¾£¬ÊÇ·ñµ÷ÓÃ TouchKeyScan() Ò»¶¨Òª¸ù¾
+C51 COMPILER V9.59.0.0   SYSTEM                                                            04/22/2019 10:58:19 PAGE 2   
+
+             -Ý´Ë±êÖ¾Î»ÖÃÆðºó
+  55   1             {
+  56   2                    SOCAPI_TouchKeyStatus &= 0x7f;// ÖØÒª²½Öè 3:  Çå³ý±êÖ¾Î»£¬ ÐèÒªÍâ²¿Çå³ý¡£
+  57   2                    Get_Data = TouchKeyScan();// °´¼üÊý¾Ý´¦Àíº¯Êý
+  58   2                    TouchKeyRestart();// Æô¶¯ÏÂÒ»ÂÖ×ª»»
+  59   2             }
+  60   1             while(Get_Data != 0x00)
+  61   1             {
+  62   2                    while(1);
+  63   2             }
+  64   1             
+  65   1      }
+  66          
+  67          
+  68          
+  69          
+  70          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    169    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     17    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

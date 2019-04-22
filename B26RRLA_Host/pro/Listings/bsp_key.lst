@@ -1,0 +1,108 @@
+C51 COMPILER V9.59.0.0   BSP_KEY                                                           04/22/2019 10:58:19 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_KEY
+OBJECT MODULE PLACED IN .\Objects\bsp_key.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\bsp_key.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;..
+                    -\user) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_key.lst) TABS(7) OBJECT(.\Objects\bsp_key.obj)
+
+line level    source
+
+   1          #include "bsp_key.h"
+   2          
+   3          unsigned long Get_Data;
+   4          unsigned char SendData1,SendData2;
+   5          
+   6          void Key_Init(void)
+   7          {
+   8   1             TouchKeyInit(); // ´¥¿Ø°´¼ü³õÊ¼»¯
+   9   1      }
+  10          
+  11          void Key_Handle(void)
+  12          {
+  13   1             if(SOCAPI_TouchKeyStatus&0x80) // ÖØÒª²½Öè 2: ´¥Ãþ¼üÉ¨ÃèÒ»ÂÖ±êÖ¾£¬ÊÇ·ñµ÷ÓÃ TouchKeyScan() Ò»¶¨Òª¸ù¾Ý´Ë±êÖ
+             -¾Î»ÖÃÆðºó
+  14   1             {
+  15   2                    SOCAPI_TouchKeyStatus &= 0x7f;// ÖØÒª²½Öè 3:  Çå³ý±êÖ¾Î»£¬ ÐèÒªÍâ²¿Çå³ý¡£
+  16   2                    Get_Data = TouchKeyScan();// °´¼üÊý¾Ý´¦Àíº¯Êý
+  17   2                    TouchKeyRestart();// Æô¶¯ÏÂÒ»ÂÖ×ª»»
+  18   2             }
+  19   1             while(Get_Data != 0x00)
+  20   1             {
+  21   2                    while(1);
+  22   2             }
+  23   1             #if 0
+                     switch (Get_Data)
+                     {
+                            case TK3_VALUE:
+                                                    if(SendData1 != LightData){
+                                                        SendData1 = LightData;
+                                                        SendData2 = LightData;
+                                                     }
+                                                    break;
+                            case TK4_VALUE:
+                                                    if(SendData1 != CupData){
+                                                        SendData1 = CupData; 
+                                                        SendData2 = CupData;
+                                                     }
+                                                    break;
+                            case TK5_VALUE:
+                                                    if(SendData1 != HomeData){
+                                                        SendData1 = HomeData;
+                                                        SendData2 = HomeData;
+                                                     }
+                                                    break;
+                            case TK12_VALUE:
+                                                    if(SendData1 != OpenData){
+                                                        SendData1 = OpenData;
+                                                        SendData2 = OpenData;
+                                                     }
+                                                    break;
+                            case TK14_VALUE:
+                                                    if(SendData1 != CloseData){
+                                                        SendData1 = CloseData;
+                                                        SendData2 = CloseData;
+C51 COMPILER V9.59.0.0   BSP_KEY                                                           04/22/2019 10:58:19 PAGE 2   
+
+                                                     }
+                                                    break;
+                            case TK15_VALUE:
+                                                     if(SendData1 != HeadUpData){
+                                                        SendData1 = HeadUpData;     
+                                                        SendData2 = HeadUpData;
+                                                     }
+                                                    break;
+                            case TK18_VALUE:
+                                                    if(SendData1 != HeadDownData){
+                                                        SendData1 = HeadDownData;
+                                                        SendData2 = HeadDownData;
+                                                     }
+                                                    break;
+                            case TK19_VALUE:
+                                                    if(SendData1 != LockData){
+                                                        SendData1 = LockData;       
+                                                        SendData2 = LockData;       
+                                                     }
+                                                    break;
+                            default:
+                                                    break;
+                     }
+                     #endif
+  78   1      }
+  79          
+  80          
+  81          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     49    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

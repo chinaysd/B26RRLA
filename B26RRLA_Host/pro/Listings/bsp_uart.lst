@@ -1,0 +1,178 @@
+C51 COMPILER V9.59.0.0   BSP_UART                                                          04/22/2019 10:58:19 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_UART
+OBJECT MODULE PLACED IN .\Objects\bsp_uart.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\bsp_uart.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;.
+                    -.\user) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_uart.lst) TABS(7) OBJECT(.\Objects\bsp_uart.obj)
+
+line level    source
+
+   1          #include "bsp_uart.h"
+   2          
+   3          
+   4          unsigned char Uart1SendFlag,Uart1ReceiveFlag;
+   5          
+   6          
+   7          
+   8          void Uart1_Init(unsigned char Fsystem,unsigned int BaudRate_Count)
+   9          {
+  10   1             P1CON &= 0xF3;   //TX/RX设置为输入带上拉
+  11   1             P1PH  |= 0x0C;
+  12   1             
+  13   1             SCON  |= 0X50;   //设置通信方式为模式一，允许接收
+  14   1             TMCON |= 0X02;
+  15   1             TMOD  |= 0X20;
+  16   1             PCON  |= 0X80;       //SMOD=1
+  17   1             TH1 = (Fsystem*1000000/BaudRate_Count)>>8;         //波特率为T1的溢出时间；
+  18   1             TL1 = Fsystem*1000000/BaudRate_Count;
+  19   1             TR1 = 0;
+  20   1             ET1 = 0;
+  21   1             EUART = 0;     //开启Uart0中断
+  22   1      }
+  23          
+  24          void Uart2_Init(unsigned char Freq,unsigned long int baud)
+  25          {
+  26   1             P2CON &= 0xFC;   //TX/RX设置为输入带上拉
+  27   1             P2PH  |= 0x03;
+  28   1             
+  29   1             OTCON = 0xC0;    //串行接口SSI选择Uart1通信
+  30   1             SSCON0 = 0x50;   //设置通信方式为模式一，允许接收
+  31   1             SSCON1 = Freq*1000000/baud;   //波特率低位控制
+  32   1             SSCON2 = (Freq*1000000/baud)>>8;   //波特率高位控制
+  33   1             IE1 = 0x01;      //开启SSI中断
+  34   1      }
+  35          
+  36          /******************************************************************************
+  37          *作者:PETER
+  38          *日期:190308
+  39          *描述:串口0发送函数
+  40          *返回:无
+  41          *******************************************************************************/
+  42          static void UART_TX_byte(unsigned char DATA)
+  43          {
+  44   1         TI = 0;
+  45   1         SBUF = DATA;
+  46   1         while(!TI);
+  47   1      }
+  48          
+  49          static unsigned char  Uart1_SendData(PROTOCOL_TX *p)
+  50          {
+  51   1             static unsigned char i;
+  52   1             for(i = 0; i < UART1_BUF_SIZE; i ++)
+  53   1             {
+  54   2                    UART_TX_byte(p->UART1_Buf[i]);
+C51 COMPILER V9.59.0.0   BSP_UART                                                          04/22/2019 10:58:19 PAGE 2   
+
+  55   2             }
+  56   1             return 0;
+  57   1      }
+  58          
+  59          unsigned char Protocol_Send(unsigned char addr,unsigned char id,unsigned int TX1_DATA)
+  60          {
+  61   1             PROTOCOL_TX buf;
+  62   1             memset(&buf,0,sizeof(buf));
+  63   1             buf.Uart1_Format.ADDR = addr;
+  64   1             buf.Uart1_Format.ID      = id;
+  65   1             buf.Uart1_Format.DATA1 = Hight(TX1_DATA);
+  66   1             buf.Uart1_Format.DATA2 = Low(TX1_DATA);
+  67   1             buf.Uart1_Format.CHECKSUM = (unsigned char)(buf.Uart1_Format.ADDR+buf.Uart1_Format.ID+buf.Uart1_Format.DA
+             -TA1+buf.Uart1_Format.DATA2);
+  68   1             buf.Uart1_Format.STOP1 = 0x0d;
+  69   1             buf.Uart1_Format.STOP2 = 0x0a;
+  70   1             return Uart1_SendData(&buf);
+  71   1      }
+  72          /******************************************************************************
+  73          *作者:PETER
+  74          *日期:190308
+  75          *描述:串口1发送函数
+  76          *返回:无
+  77          *******************************************************************************/
+  78          
+  79          static void Uart1_Tx_Byte(unsigned char Uart1_Data)
+  80          {
+  81   1             SSDAT = Uart1_Data;
+  82   1             //while(!Uart1SendFlag);
+  83   1             Uart1SendFlag = 0;
+  84   1      }
+  85          
+  86          static unsigned char Send2_Data(PROTOCOL_TX2 *p)
+  87          {
+  88   1             static unsigned char i;
+  89   1             for(i = 0; i < UART2_BUF_SIZE; i ++)
+  90   1             {
+  91   2                    Uart1_Tx_Byte(p->UART2_Buf[i]);
+  92   2             }
+  93   1             return 0;
+  94   1      }
+  95          
+  96          unsigned char Protocol2_Send(unsigned char add2,unsigned char id2,unsigned int TX2_DATA)
+  97          {
+  98   1             PROTOCOL_TX2 TX2_Buf;
+  99   1             memset(&TX2_Buf,0,sizeof(TX2_Buf));
+ 100   1             TX2_Buf.Uart2_Format.TX2_ADDR = add2;
+ 101   1             TX2_Buf.Uart2_Format.TX2_ID = id2;
+ 102   1             TX2_Buf.Uart2_Format.TX2_DATA1 = TX2_Hight(TX2_DATA);
+ 103   1             TX2_Buf.Uart2_Format.TX2_DATA2 = TX2_Low(TX2_DATA);
+ 104   1             TX2_Buf.Uart2_Format.TX2_CHECKSUM = (unsigned char)(TX2_Buf.Uart2_Format.TX2_ADDR+TX2_Buf.Uart2_Format.TX
+             -2_ID+TX2_Buf.Uart2_Format.TX2_DATA1+TX2_Buf.Uart2_Format.TX2_DATA2);
+ 105   1             TX2_Buf.Uart2_Format.TX2_STOP1 = 0x0d;
+ 106   1             TX2_Buf.Uart2_Format.TX2_STOP2 = 0x0a;
+ 107   1             return Send2_Data(&TX2_Buf);
+ 108   1      }
+ 109          
+ 110          
+ 111          /******************************************************************************
+ 112          *作者:PETER
+ 113          *日期:190308
+ 114          *描述:串口1接收函数
+C51 COMPILER V9.59.0.0   BSP_UART                                                          04/22/2019 10:58:19 PAGE 3   
+
+ 115          *返回:无
+ 116          *******************************************************************************/
+ 117          unsigned char Rev_Data(unsigned char SLAVE)
+ 118          {
+ 119   1          SLAVE = SSDAT;
+ 120   1          return SLAVE;
+ 121   1      }
+ 122          
+ 123          /******************************************************************************
+ 124          *作者:PETER
+ 125          *日期:190308
+ 126          *描述:串口1中断处理函数
+ 127          *返回:无
+ 128          *******************************************************************************/
+ 129          
+ 130          void Uart1_Int() interrupt 7   //Uart1中断函数
+ 131          {
+ 132   1             if(SSCON0&0x02)    //发送标志位判断
+ 133   1             {
+ 134   2                    SSCON0 &= 0xFD;
+ 135   2                    Uart1SendFlag = 1;
+ 136   2             }
+ 137   1             if((SSCON0&0x01))  //接收标志位判断
+ 138   1             {
+ 139   2                    SSCON0 &= 0xFE;
+ 140   2                    Uart1ReceiveFlag = 1;
+ 141   2             }      
+ 142   1      }
+ 143          
+ 144          
+ 145          
+ 146          
+ 147          
+ 148          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    457    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4      36
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
