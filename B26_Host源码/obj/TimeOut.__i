@@ -1,0 +1,1 @@
+"C\TimeOut.c" OPTIMIZE (2,SPEED) BROWSE INCDIR(.\H;.\lib) DEBUG OBJECTEXTEND PRINT(.\lst\TimeOut.lst) TABS (7) OBJECT(.\obj\TimeOut.obj)

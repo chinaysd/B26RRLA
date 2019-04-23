@@ -1,0 +1,12 @@
+".\obj\STARTUP.obj",
+".\obj\main.obj",
+".\obj\SYSTEM.obj",
+".\obj\function.obj",
+".\obj\INIT.obj",
+".\obj\key.obj",
+".\obj\UART.obj",
+".\obj\S_TouchKeyCFG.obj",
+".\lib\SC92F8X6XB_HighSensitive_Lib_T1_V1.0.5.LIB",
+".\obj\TimeOut.obj" 
+TO ".\obj\B26_ALL_2018.02.03" 
+PRINT(".\lst\B26_ALL_2018.02.m51") RAMSIZE(256) 

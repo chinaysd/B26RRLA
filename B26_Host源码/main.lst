@@ -1,0 +1,141 @@
+C51 COMPILER V9.00   MAIN                                                                  02/03/2018 08:03:33 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE C\main.c BROWSE DEBUG OBJECTEXTEND PRINT(.\main.lst) OBJECT(main.obj)
+
+line level    source
+
+   1          #include "H/SC93F833X_C.H"
+*** WARNING C318 IN LINE 1 OF C\main.c: can't open file 'H/SC93F833X_C.H'
+   2          
+   3          
+   4          //#define       Fsys            11059200/2
+   5          //#define       Fsys            6000000
+   6          //#define       Fsys            11059200
+   7          #define Fsys            12000000
+   8          
+   9          
+  10          #define BaudRate        9600
+  11          
+  12          
+  13          
+  14          void uart_tx_byte(unsigned char dat)
+  15          {
+  16   1              TI=0;
+*** ERROR C202 IN LINE 16 OF C\MAIN.C: 'TI': undefined identifier
+  17   1              SBUF=dat;
+*** ERROR C202 IN LINE 17 OF C\MAIN.C: 'SBUF': undefined identifier
+  18   1              while(!TI);
+*** ERROR C202 IN LINE 18 OF C\MAIN.C: 'TI': undefined identifier
+  19   1              WDTCON|=0x10;
+*** ERROR C202 IN LINE 19 OF C\MAIN.C: 'WDTCON': undefined identifier
+  20   1      }
+  21          
+  22          void uart_tx_buf(unsigned char *p)
+  23          {
+  24   1              while((*p)!='\0')
+  25   1              {
+  26   2                      uart_tx_byte(*p);
+  27   2                      p++;
+  28   2              }
+  29   1      }
+  30          
+  31          void main()
+  32          {
+  33   1              unsigned char ii,jj,kk;
+  34   1              unsigned char cnt;
+  35   1              OPINX=0xC1;
+*** ERROR C202 IN LINE 35 OF C\MAIN.C: 'OPINX': undefined identifier
+  36   1              
+  37   1      //      OPREG=0xA8;//6M
+  38   1              OPREG=0x98;//12M        
+*** ERROR C202 IN LINE 38 OF C\MAIN.C: 'OPREG': undefined identifier
+  39   1              OPINX=0xC2;
+*** ERROR C202 IN LINE 39 OF C\MAIN.C: 'OPINX': undefined identifier
+  40   1              OPREG=0x00;
+*** ERROR C202 IN LINE 40 OF C\MAIN.C: 'OPREG': undefined identifier
+  41   1              
+  42   1      //      OPINX=0x83;
+  43   1      //      OPREG-=40;
+  44   1              
+  45   1              WDTCON=0x10;
+*** ERROR C202 IN LINE 45 OF C\MAIN.C: 'WDTCON': undefined identifier
+C51 COMPILER V9.00   MAIN                                                                  02/03/2018 08:03:33 PAGE 2   
+
+  46   1              
+  47   1              P0CON=P1CON=P2CON=P5CON=0xFF;
+*** ERROR C202 IN LINE 47 OF C\MAIN.C: 'P0CON': undefined identifier
+  48   1              
+  49   1              P1CON|=1<<3;
+*** ERROR C202 IN LINE 49 OF C\MAIN.C: 'P1CON': undefined identifier
+  50   1              P13=1;
+*** ERROR C202 IN LINE 50 OF C\MAIN.C: 'P13': undefined identifier
+  51   1              P1CON&=~(1<<2);
+*** ERROR C202 IN LINE 51 OF C\MAIN.C: 'P1CON': undefined identifier
+  52   1              P12=1;
+*** ERROR C202 IN LINE 52 OF C\MAIN.C: 'P12': undefined identifier
+  53   1              
+  54   1              //使用定时器1
+  55   1              SCON=0x50;
+*** ERROR C202 IN LINE 55 OF C\MAIN.C: 'SCON': undefined identifier
+  56   1              PCON|=0x80;
+*** ERROR C202 IN LINE 56 OF C\MAIN.C: 'PCON': undefined identifier
+  57   1              T2CON&=~0x30;
+*** ERROR C202 IN LINE 57 OF C\MAIN.C: 'T2CON': undefined identifier
+  58   1              TMCON|=0x02;
+*** ERROR C202 IN LINE 58 OF C\MAIN.C: 'TMCON': undefined identifier
+  59   1              TMOD&=0x0F;
+*** ERROR C202 IN LINE 59 OF C\MAIN.C: 'TMOD': undefined identifier
+  60   1              TMOD|=0x20;
+*** ERROR C202 IN LINE 60 OF C\MAIN.C: 'TMOD': undefined identifier
+  61   1              TH1=256-Fsys/BaudRate/16/2*2;
+*** ERROR C202 IN LINE 61 OF C\MAIN.C: 'TH1': undefined identifier
+  62   1              TR1=0;
+*** ERROR C202 IN LINE 62 OF C\MAIN.C: 'TR1': undefined identifier
+  63   1              TR1=1;
+*** ERROR C202 IN LINE 63 OF C\MAIN.C: 'TR1': undefined identifier
+  64   1              EUART=0;
+*** ERROR C202 IN LINE 64 OF C\MAIN.C: 'EUART': undefined identifier
+  65   1              
+  66   1      //      //使用定时器2
+  67   1      //      SCON=0X50;         //方式1，允许接收数据
+  68   1      //      PCON |=0X80;       //方式1
+  69   1      //      T2CON|=0x34;       //定时器2产生波特率
+  70   1      //      T2MOD=0x01;        //16位自动重载定时器模式
+  71   1      //      TMCON|=0X04; 
+  72   1      //      RCAP2H=(65536-Fsys/BaudRate/16/2)/256;                  
+  73   1      //      RCAP2L=(65536-Fsys/BaudRate/16/2)%256;  
+  74   1      //      TR2=0;
+  75   1      //      TR2=1;
+  76   1      //      EUART=0;        
+  77   1      
+  78   1              
+  79   1              while(1)
+  80   1              {
+  81   2                      WDTCON|=0x10;   
+*** ERROR C202 IN LINE 81 OF C\MAIN.C: 'WDTCON': undefined identifier
+  82   2                      uart_tx_buf("SC92F7323：UART0发送测试！！！");  //发字符串
+  83   2                      uart_tx_byte('\n');                                                             //换行
+  84   2                      uart_tx_buf("测试次数：");                                              //发字符串
+  85   2                      uart_tx_byte(cnt/100+'0');                                              
+  86   2                      uart_tx_byte(cnt%100/10+'0');
+  87   2                      uart_tx_byte(cnt%10+'0');
+  88   2                      uart_tx_buf("次");              
+  89   2                      uart_tx_byte('\n');                                                             //换行
+  90   2                      
+  91   2                      cnt++;
+C51 COMPILER V9.00   MAIN                                                                  02/03/2018 08:03:33 PAGE 3   
+
+  92   2                      
+  93   2      //              for(ii=0;ii<10;ii++)
+  94   2      //                      for(jj=0;jj<250;jj++)
+  95   2      //                              for(kk=0;kk<250;kk++)
+  96   2      //                                      WDTCON|=0x10;
+  97   2              }
+  98   1              
+  99   1      }
+ 100          
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  25 ERROR(S)

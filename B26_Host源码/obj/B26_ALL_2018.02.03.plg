@@ -1,0 +1,35 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+F:\MIAN_杨\项目\B26\B26赛元\B26_三推兼容两推2018.03.13\B26_三推兼容两推2018.03.12\B26_ALL_2018.03.12.uvproj
+Project File Date:  03/12/2018
+
+<h2>Output:</h2>
+compiling main.c...
+C\main.c - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER1_INIT?INIT
+Program Size: data=79.3 xdata=157 code=4488
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+compiling UART.C...
+compiling INIT.C...
+compiling S_TouchKeyCFG.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER1_INIT?INIT
+Program Size: data=79.3 xdata=157 code=4488
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 1 Warning(s).
+Load "F:\\MIAN_杨\\项目\\B26\\B26赛元\\B26_三推兼容两推2018.03.13\\B26_三推兼容两推2018.03.12\\obj\\B26_ALL_2018.02.03" 
+仿真器已连接.
+Flash Write Done: 4489 bytes programmed.
+CheckSum = 0x1c42
+Flash Verify Done: 4492 bytes verified.

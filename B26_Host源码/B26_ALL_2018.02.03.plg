@@ -1,0 +1,200 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+D:\B26_ALL_2018.02.03\B26_ALL_2018.02.03.uvproj
+Project File Date:  02/03/2018
+
+<h2>Output:</h2>
+compiling main.c...
+C\main.c(1): warning C318: can't open file 'H/SC93F833X_C.H'
+C\MAIN.C(16): error C202: 'TI': undefined identifier
+C\MAIN.C(17): error C202: 'SBUF': undefined identifier
+C\MAIN.C(18): error C202: 'TI': undefined identifier
+C\MAIN.C(19): error C202: 'WDTCON': undefined identifier
+C\MAIN.C(35): error C202: 'OPINX': undefined identifier
+C\MAIN.C(38): error C202: 'OPREG': undefined identifier
+C\MAIN.C(39): error C202: 'OPINX': undefined identifier
+C\MAIN.C(40): error C202: 'OPREG': undefined identifier
+C\MAIN.C(45): error C202: 'WDTCON': undefined identifier
+C\MAIN.C(47): error C202: 'P0CON': undefined identifier
+C\MAIN.C(49): error C202: 'P1CON': undefined identifier
+C\MAIN.C(50): error C202: 'P13': undefined identifier
+C\MAIN.C(51): error C202: 'P1CON': undefined identifier
+C\MAIN.C(52): error C202: 'P12': undefined identifier
+C\MAIN.C(55): error C202: 'SCON': undefined identifier
+C\MAIN.C(56): error C202: 'PCON': undefined identifier
+C\MAIN.C(57): error C202: 'T2CON': undefined identifier
+C\MAIN.C(58): error C202: 'TMCON': undefined identifier
+C\MAIN.C(59): error C202: 'TMOD': undefined identifier
+C\MAIN.C(60): error C202: 'TMOD': undefined identifier
+C\MAIN.C(61): error C202: 'TH1': undefined identifier
+C\MAIN.C(62): error C202: 'TR1': undefined identifier
+C\MAIN.C(63): error C202: 'TR1': undefined identifier
+C\MAIN.C(64): error C202: 'EUART': undefined identifier
+C\MAIN.C(81): error C202: 'WDTCON': undefined identifier
+C\main.c - 25 Error(s), 1 Warning(s).
+compiling main.c...
+C\main.c(1): warning C318: can't open file 'H/SC93F833X_C.H'
+C\MAIN.C(16): error C202: 'TI': undefined identifier
+C\MAIN.C(17): error C202: 'SBUF': undefined identifier
+C\MAIN.C(18): error C202: 'TI': undefined identifier
+C\MAIN.C(19): error C202: 'WDTCON': undefined identifier
+C\MAIN.C(35): error C202: 'OPINX': undefined identifier
+C\MAIN.C(38): error C202: 'OPREG': undefined identifier
+C\MAIN.C(39): error C202: 'OPINX': undefined identifier
+C\MAIN.C(40): error C202: 'OPREG': undefined identifier
+C\MAIN.C(45): error C202: 'WDTCON': undefined identifier
+C\MAIN.C(47): error C202: 'P0CON': undefined identifier
+C\MAIN.C(49): error C202: 'P1CON': undefined identifier
+C\MAIN.C(50): error C202: 'P13': undefined identifier
+C\MAIN.C(51): error C202: 'P1CON': undefined identifier
+C\MAIN.C(52): error C202: 'P12': undefined identifier
+C\MAIN.C(55): error C202: 'SCON': undefined identifier
+C\MAIN.C(56): error C202: 'PCON': undefined identifier
+C\MAIN.C(57): error C202: 'T2CON': undefined identifier
+C\MAIN.C(58): error C202: 'TMCON': undefined identifier
+C\MAIN.C(59): error C202: 'TMOD': undefined identifier
+C\MAIN.C(60): error C202: 'TMOD': undefined identifier
+C\MAIN.C(61): error C202: 'TH1': undefined identifier
+C\MAIN.C(62): error C202: 'TR1': undefined identifier
+C\MAIN.C(63): error C202: 'TR1': undefined identifier
+C\MAIN.C(64): error C202: 'EUART': undefined identifier
+C\MAIN.C(81): error C202: 'WDTCON': undefined identifier
+C\main.c - 25 Error(s), 1 Warning(s).
+compiling main.c...
+C\MAIN.C(33): warning C280: 'ii': unreferenced local variable
+C\MAIN.C(33): warning C280: 'jj': unreferenced local variable
+C\MAIN.C(33): warning C280: 'kk': unreferenced local variable
+C\main.c - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+linking...
+Program Size: data=13.0 xdata=0 code=258
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+C\MAIN.C(33): warning C280: 'ii': unreferenced local variable
+C\MAIN.C(33): warning C280: 'jj': unreferenced local variable
+C\MAIN.C(33): warning C280: 'kk': unreferenced local variable
+linking...
+Program Size: data=13.0 xdata=0 code=258
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 3 Warning(s).
+compiling main.c...
+C\MAIN.C(33): warning C280: 'ii': unreferenced local variable
+C\MAIN.C(33): warning C280: 'jj': unreferenced local variable
+C\MAIN.C(33): warning C280: 'kk': unreferenced local variable
+C\main.c - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+linking...
+Program Size: data=13.0 xdata=0 code=258
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+C\MAIN.C(33): warning C280: 'ii': unreferenced local variable
+C\MAIN.C(33): warning C280: 'jj': unreferenced local variable
+C\MAIN.C(33): warning C280: 'kk': unreferenced local variable
+linking...
+Program Size: data=13.0 xdata=0 code=258
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 3 Warning(s).
+compiling main.c...
+C\main.c - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+Program Size: data=10.0 xdata=0 code=279
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+linking...
+Program Size: data=10.0 xdata=0 code=279
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+C\main.c - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+Program Size: data=10.0 xdata=0 code=279
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+linking...
+Program Size: data=10.0 xdata=0 code=279
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+C\main.c - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UART_TX_BUF?MAIN
+Program Size: data=10.0 xdata=0 code=172
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UART_TX_BUF?MAIN
+Program Size: data=10.0 xdata=0 code=172
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 1 Warning(s).
+compiling main.c...
+C\MAIN.C(33): warning C280: 'ii': unreferenced local variable
+C\MAIN.C(33): warning C280: 'jj': unreferenced local variable
+C\MAIN.C(33): warning C280: 'kk': unreferenced local variable
+C\MAIN.C(34): warning C280: 'cnt': unreferenced local variable
+C\main.c - 0 Error(s), 4 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UART_TX_BUF?MAIN
+Program Size: data=13.0 xdata=0 code=143
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+C\MAIN.C(33): warning C280: 'ii': unreferenced local variable
+C\MAIN.C(33): warning C280: 'jj': unreferenced local variable
+C\MAIN.C(33): warning C280: 'kk': unreferenced local variable
+C\MAIN.C(34): warning C280: 'cnt': unreferenced local variable
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UART_TX_BUF?MAIN
+Program Size: data=13.0 xdata=0 code=143
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 5 Warning(s).
+compiling main.c...
+C\MAIN.C(33): warning C280: 'ii': unreferenced local variable
+C\MAIN.C(33): warning C280: 'jj': unreferenced local variable
+C\MAIN.C(33): warning C280: 'kk': unreferenced local variable
+C\MAIN.C(34): warning C280: 'cnt': unreferenced local variable
+C\main.c - 0 Error(s), 4 Warning(s).
+Build target 'Target 1'
+linking...
+Program Size: data=13.0 xdata=0 code=173
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+C\MAIN.C(33): warning C280: 'ii': unreferenced local variable
+C\MAIN.C(33): warning C280: 'jj': unreferenced local variable
+C\MAIN.C(33): warning C280: 'kk': unreferenced local variable
+C\MAIN.C(34): warning C280: 'cnt': unreferenced local variable
+linking...
+Program Size: data=13.0 xdata=0 code=173
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 4 Warning(s).

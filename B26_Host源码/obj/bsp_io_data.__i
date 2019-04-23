@@ -1,0 +1,1 @@
+"C\bsp_io_data.c" OPTIMIZE (2,SPEED) BROWSE INCDIR(.\H;.\lib) DEBUG OBJECTEXTEND PRINT(.\lst\bsp_io_data.lst) TABS (7) OBJECT(.\obj\bsp_io_data.obj)

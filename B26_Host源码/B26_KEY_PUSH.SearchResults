@@ -1,0 +1,6 @@
+---- P25 Matches (6 in 4 files) ----
+INIT.H (H):#define   IO_RED_LIGHT_PIN          P25//P2.5ºìµÆ
+key.c (C):			 P25 = 1;
+key.c (C):			 P25 = 0;
+SC92F836xB_C.H (H):sbit 	P25	= P2^5;
+SYSTEM.C (C):	P25 = !P25;

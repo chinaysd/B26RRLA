@@ -1,0 +1,3 @@
+---- M1_WriteHigh Matches (2 in 2 files) ----
+bsp_mass.c (C:\Users\Administrator\Desktop\B26\B26_Slave\bsp):				M1_WriteHigh();
+bsp_mass.h (C:\Users\Administrator\Desktop\B26\B26_Slave\bsp):#define M1_WriteHigh()		{GPIO_WriteHigh(M1_PORT, M1_PIN);}

@@ -1,0 +1,212 @@
+C51 COMPILER V9.59.0.0   KEY                                                               04/23/2019 19:12:17 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE KEY
+OBJECT MODULE PLACED IN .\obj\key.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE C\key.c OPTIMIZE(2,SPEED) BROWSE INCDIR(.\H;.\lib) DEBUG OBJECTEXTEND PRINT(
+                    -.\lst\key.lst) TABS(7) OBJECT(.\obj\key.obj)
+
+line level    source
+
+   1          #include "key.h"
+   2          
+   3          extern unsigned char count_level;
+   4          extern unsigned char lock;
+   5          
+   6          extern unsigned char TX_DATA;
+   7          extern unsigned int TX1_DATA;
+   8          
+   9          unsigned long int  get_key_data;
+  10          extern unsigned long int MyKey_Buf_Data;
+  11          
+  12          extern unsigned char    key_press;
+  13          
+  14          extern unsigned char RevString[UART2_REVBUF_SIZE];
+  15          unsigned long RevGetData;
+  16          
+  17          
+  18          /******************************************************************************
+  19          *×÷Õß:PETER
+  20          *ÈÕÆÚ:190308
+  21          *ÃèÊö:´¥Ãþ°´¼ü´¦Àíº¯Êý
+  22          *·µ»Ø:ÎÞ
+  23          *******************************************************************************/
+  24          static void Key_Handle(void)
+  25          {
+  26   1             if(get_key_data!=0)  //¼ü°´ÏÂ
+  27   1             {
+  28   2                           MyKey_Buf_Data = get_key_data;
+  29   2                           if((TK1_VALUE == MyKey_Buf_Data)&&(lock))
+  30   2                           {
+  31   3                             if(key_press)
+  32   3                             {
+  33   4                                  key_press = 0;
+  34   4                                  Foot_Led_Cmd();      
+  35   4                             }
+  36   3                           }
+  37   2                           else if((TK2_VALUE == MyKey_Buf_Data)&&(lock))
+  38   2                           {
+  39   3                             if(key_press)
+  40   3                             {
+  41   4                                  key_press = 0;
+  42   4                                  Cup_Open_Cmd();                    
+  43   4                             }
+  44   3                           }
+  45   2                           else if((TK3_VALUE == MyKey_Buf_Data)&&(lock))
+  46   2                           {
+  47   3                             if(key_press)
+  48   3                             {
+  49   4                                  key_press = 0;
+  50   4                                  PushB_Open_Cmd();                  
+  51   4                             }
+  52   3                           }
+  53   2                           else if((TK4_VALUE == MyKey_Buf_Data)&&(lock))
+  54   2                           {
+C51 COMPILER V9.59.0.0   KEY                                                               04/23/2019 19:12:17 PAGE 2   
+
+  55   3                             if(key_press)
+  56   3                             {
+  57   4                                  key_press = 0;
+  58   4                                  Push_Reset_Cmd();                  
+  59   4                             }
+  60   3                           }
+  61   2                           else if(TK5_VALUE == MyKey_Buf_Data)
+  62   2                           {
+  63   3                             if(key_press)
+  64   3                             {               
+  65   4                                  key_press = 0;
+  66   4                             }
+  67   3                           }
+  68   2                           else if((TK6_VALUE == MyKey_Buf_Data)&&(lock))
+  69   2                           {
+  70   3                             if(key_press)
+  71   3                             {
+  72   4                                  key_press = 0;
+  73   4                                  PushA_Open_Cmd();
+  74   4                             }
+  75   3                             
+  76   3                           }
+  77   2                           else if((TK7_VALUE == MyKey_Buf_Data)&&(lock))
+  78   2                           {
+  79   3                             if(key_press)
+  80   3                             {
+  81   4                                  key_press = 0;
+  82   4                                  PushA_Close_Cmd();   
+  83   4                             }
+  84   3                             
+  85   3                           }
+  86   2                           else if((TK8_VALUE == MyKey_Buf_Data)&&(lock))
+  87   2                           {
+  88   3                             if(key_press)
+  89   3                             {
+  90   4                                  key_press = 0;
+  91   4                                  PushB_Close_Cmd();   
+  92   4                             }
+  93   3                            
+  94   3                           }
+  95   2                           else if((0X0100 == MyKey_Buf_Data)&&(lock))
+  96   2                           {
+  97   3                             if(key_press)
+  98   3                             {
+  99   4                                  key_press = 0;
+ 100   4                                  PushC_Open_Cmd();    
+ 101   4                             }
+ 102   3                             
+ 103   3                           }
+ 104   2                           else if((0X0200 == MyKey_Buf_Data)&&(lock))
+ 105   2                           {
+ 106   3                             if(key_press)
+ 107   3                             {
+ 108   4                                  key_press = 0;
+ 109   4                                  PushC_Close_Cmd();                 
+ 110   4                             }
+ 111   3                           }
+ 112   2                }
+ 113   1             else
+ 114   1             {
+ 115   2                    if(!key_press)
+ 116   2                    {
+C51 COMPILER V9.59.0.0   KEY                                                               04/23/2019 19:12:17 PAGE 3   
+
+ 117   3                           key_press = 1;
+ 118   3                          TX_DATA = 0X55;
+ 119   3                          TX1_DATA = 0X00;
+ 120   3                    }
+ 121   2             }
+ 122   1             #if 1
+ 123   1             if(RevData_If())
+ 124   1             {
+ 125   2                    RevGetData = (unsigned long)Get32Bit(RevString[2],RevString[3]);
+ 126   2                    memset(&RevString,0,sizeof(RevString));
+ 127   2                    switch (RevGetData)
+ 128   2                    {
+ 129   3                           case ExtiLedOpenData:
+ 130   3                                                key_press = 1;
+ 131   3                                                TX_DATA = LedOpenData;      //ÍùÏÂ·¢µÄÖ¸Áî
+ 132   3                                                count_level = 100;
+ 133   3                                               break;
+ 134   3                           case ExtiLedCloseData:
+ 135   3                                                key_press = 1;
+ 136   3                                                TX_DATA = LedCloseData;     //ÍùÏÂ·¢µÄÖ¸Áî
+ 137   3                                                count_level = 15;
+ 138   3                                               break;
+ 139   3                            default:
+ 140   3                                             break;
+ 141   3                    }
+ 142   2             }
+ 143   1             #endif
+ 144   1      }
+ 145          
+ 146          /******************************************************************************
+ 147          *×÷Õß:PETER
+ 148          *ÈÕÆÚ:190308
+ 149          *ÃèÊö:´¥Ãþ°´¼üÉ¨Ãèº¯Êý
+ 150          *·µ»Ø:ÎÞ
+ 151          *******************************************************************************/
+ 152          void Key_Scanf(void)
+ 153          {
+ 154   1             WDTCON|=0x10;
+ 155   1             if(SOCAPI_TouchKeyStatus&0x80) // ÖØÒª²½Öè 2: ´¥Ãþ¼üÉ¨ÃèÒ»ÂÖ±êÖ¾£¬ÊÇ·ñµ÷ÓÃ TouchKeyScan() Ò»¶¨Òª¸ù¾Ý´Ë±êÖ
+             -¾Î»ÖÃÆðºó
+ 156   1            {
+ 157   2                    SOCAPI_TouchKeyStatus &= 0x7f;// ÖØÒª²½Öè 3:  Çå³ý±êÖ¾Î»£¬ ÐèÒªÍâ²¿Çå³ý¡£
+ 158   2                    get_key_data = TouchKeyScan();// °´¼üÊý¾Ý´¦Àíº¯Êý
+ 159   2                    TouchKeyRestart();// Æô¶¯ÏÂÒ»ÂÖ×ª»»
+ 160   2             }
+ 161   1             Key_Handle();
+ 162   1      }
+ 163          
+ 164          
+ 165          
+ 166          
+ 167          
+ 168          
+ 169          
+ 170          
+ 171          
+ 172          
+ 173          
+ 174          
+ 175          
+ 176          
+ 177          
+C51 COMPILER V9.59.0.0   KEY                                                               04/23/2019 19:12:17 PAGE 4   
+
+ 178          
+ 179          
+ 180          
+ 181          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    599    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
