@@ -1,0 +1,1 @@
+"lib\S_TouchKeyCFG.C" OPTIMIZE (2,SPEED) BROWSE INCDIR(.\H;.\lib) DEBUG OBJECTEXTEND PRINT(.\lst\S_TouchKeyCFG.lst) TABS (7) OBJECT(.\obj\S_TouchKeyCFG.obj)

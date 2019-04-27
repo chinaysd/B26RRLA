@@ -1,0 +1,180 @@
+C51 COMPILER V9.59.0.0   FUNCTION                                                          04/27/2019 08:30:01 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE FUNCTION
+OBJECT MODULE PLACED IN .\obj\function.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE C\function.c OPTIMIZE(2,SPEED) BROWSE INCDIR(.\H;.\lib) DEBUG OBJECTEXTEND P
+                    -RINT(.\lst\function.lst) TABS(7) OBJECT(.\obj\function.obj)
+
+line level    source
+
+   1          #include "function.h"
+   2          
+   3          #define HEAT_ENABLE    1
+   4          #define HEAT_DISABLE   0
+   5          
+   6          #define MASS_ENABLE     1
+   7          #define MASS_DISBALE    0
+   8          
+   9          #define CUP_FULL_ENABLE 1
+  10          #define CUP_FULL_DISABLE 0
+  11          
+  12          
+  13          static unsigned char MOTRO_FLAG;
+  14          extern unsigned char count_level,lock,TX_DATA;
+  15          extern unsigned int TX1_DATA;
+  16          
+  17          unsigned long int MyKey_Buf_Data;
+  18          
+  19          unsigned char key_press,up_flag,down_flag,heat_red_flag,auto_close_heat,auto_close_mass,rev_flag;
+  20                              
+  21          unsigned int motro_count0,motro_count1,auto_close_heat_cnt,auto_close_mass_cnt,u16TimeLock;
+  22          
+  23          
+  24          void Foot_Led_Cmd(void)   //脚灯指令
+  25          {
+  26   1             if(count_level == 15)
+  27   1             {
+  28   2               count_level = 100;
+  29   2                TX_DATA = LedOpenData;    //往下发的指令
+  30   2                TX1_DATA = ExtiLedOpenData;
+  31   2             }
+  32   1             else if(count_level == 100)
+  33   1             {
+  34   2               count_level = 15; 
+  35   2                TX_DATA = LedCloseData;    //往下发的指令
+  36   2                TX1_DATA = ExtiLedCloseData;
+  37   2             }
+  38   1      }
+  39          
+  40          void Cup_Open_Cmd(void)          //杯子升降指令
+  41          {
+  42   1             if(MOTRO_FLAG == 0)
+  43   1             {
+  44   2               MOTRO_FLAG = 1;
+  45   2               P0 &= 0Xf9;
+  46   2               P0 |= 1 << 1;
+  47   2               motro_count0 = 0;
+  48   2               motro_count1 = 0;
+  49   2               up_flag = 1;
+  50   2               down_flag = 0;
+  51   2             }
+  52   1             else
+  53   1             {
+  54   2               MOTRO_FLAG = 0;
+C51 COMPILER V9.59.0.0   FUNCTION                                                          04/27/2019 08:30:01 PAGE 2   
+
+  55   2               P0 &= 0Xf9;
+  56   2               P0 |= 1 << 2;
+  57   2               motro_count0 = 0;
+  58   2               motro_count1 = 0;
+  59   2               up_flag = 0;
+  60   2               down_flag = 1;
+  61   2             }
+  62   1      }
+  63          
+  64          void PushB_Open_Cmd(void)    //推杆B打开指令
+  65          {
+  66   1             TX_DATA = HeadUpData;
+  67   1      }
+  68          
+  69          void PushB_Close_Cmd(void)        //推杆B收回指令
+  70          {
+  71   1             TX_DATA = HeadDownData;
+  72   1      }
+  73          
+  74          void PushA_Close_Cmd(void)       //推杆A收回指令
+  75          {
+  76   1             TX_DATA = CloseData;
+  77   1      }
+  78          
+  79          void PushA_Open_Cmd(void)                //推杆A打开指令
+  80          {
+  81   1             TX_DATA = OpenData;
+  82   1      }
+  83          
+  84          void PushC_Open_Cmd(void)              //推杆C打开指令
+  85          {
+  86   1             TX_DATA = LumbarOpenData;
+  87   1      }
+  88          
+  89          void PushC_Close_Cmd(void)            //推杆C收回指令
+  90          {
+  91   1             TX_DATA = LumbarCloseData;
+  92   1      }
+  93          
+  94          void Push_Reset_Cmd(void)              //推杆复位指令
+  95          {
+  96   1             TX_DATA = HomeData;
+  97   1      }
+  98          
+  99          #if 0
+              
+              #if HEAT_DISABLE
+              void Heat_Status(void)       //发热布状态指令
+              {
+                     if(heat_red_flag == 0)
+                     {
+                       heat_red_flag = 1;
+                       IO_RED_LIGHT_ON;
+                       auto_close_heat = 1;
+                       auto_close_heat_cnt = 0;
+                     }
+                     else
+                     {
+                       heat_red_flag = 0;
+                       IO_RED_LIGHT_OFF;
+                       auto_close_heat = 0;
+                       auto_close_heat_cnt = 0;
+C51 COMPILER V9.59.0.0   FUNCTION                                                          04/27/2019 08:30:01 PAGE 3   
+
+                     }
+                     TX_DATA = 0x20;
+              }
+              #endif
+              
+              #if MASS_ENABLE
+              void Mass_Status(void)                //马达工作状态
+              {
+                     #if 0
+                     rev_flag = ~rev_flag;
+                     if(rev_flag)
+                     {
+                        auto_close_mass = 1;
+                        auto_close_mass_cnt = 0;
+                     }
+                     else
+                     {
+                        auto_close_mass = 0;
+                        auto_close_mass_cnt = 0;
+                     }
+                     #endif
+                     TX_DATA = 0x21;
+              }
+              #endif
+              
+              #endif
+ 143          
+ 144          
+ 145          
+ 146          
+ 147          
+ 148          
+ 149          
+ 150          
+ 151          
+ 152          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    138    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     22    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

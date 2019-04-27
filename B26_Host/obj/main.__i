@@ -1,0 +1,1 @@
+"C\main.c" OPTIMIZE (2,SPEED) BROWSE INCDIR(.\H;.\lib) DEBUG OBJECTEXTEND PRINT(.\lst\main.lst) TABS (7) OBJECT(.\obj\main.obj)
