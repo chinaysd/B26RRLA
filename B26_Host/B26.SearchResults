@@ -1,0 +1,18 @@
+---- lock Matches (17 in 4 files) ----
+function.c (C):extern unsigned char count_level,lock,TX_DATA;
+INIT.C (C):unsigned char count_250us_time,count_level,lock = 1;
+key.c (C):extern unsigned char count_level,lock,TX_DATA,key_press,RevString[UART2_REVBUF_SIZE];
+key.c (C):			if((TK1_VALUE == MyKey_Buf_Data)&&(lock))
+key.c (C):			else if((TK2_VALUE == MyKey_Buf_Data)&&(lock))
+key.c (C):			else if((TK3_VALUE == MyKey_Buf_Data)&&(lock))
+key.c (C):			else if((TK4_VALUE == MyKey_Buf_Data)&&(lock))
+key.c (C):			else if((TK6_VALUE == MyKey_Buf_Data)&&(lock))
+key.c (C):			else if((TK7_VALUE == MyKey_Buf_Data)&&(lock))
+key.c (C):			else if((TK8_VALUE == MyKey_Buf_Data)&&(lock))
+key.c (C):			else if((0X0100 == MyKey_Buf_Data)&&(lock))
+key.c (C):			else if((0X0200 == MyKey_Buf_Data)&&(lock))
+key.c (C):	 	if(lock)
+key.c (C):			  lock = 0;
+key.c (C):			  lock = 1;
+SYSTEM.C (C):extern unsigned char count_level,lock;
+SYSTEM.C (C):    lock = 1;

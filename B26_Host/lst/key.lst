@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   KEY                                                               04/27/2019 08:30:02 PAGE 1   
+C51 COMPILER V9.59.0.0   KEY                                                               05/07/2019 09:57:16 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE KEY
@@ -10,194 +10,252 @@ line level    source
 
    1          #include "key.h"
    2          
-   3          extern unsigned char count_level,lock,TX_DATA,key_press,RevString[UART2_REVBUF_SIZE];
+   3          extern unsigned char count_level,TX_DATA,key_press,RevString[UART2_REVBUF_SIZE];
    4          extern unsigned int TX1_DATA;
-   5          
-   6          unsigned long int  get_key_data,RevGetData;
-   7          extern unsigned long int MyKey_Buf_Data;
-   8          
-   9          /******************************************************************************
-  10          *×÷Õß:PETER
-  11          *ÈÕÆÚ:190308
-  12          *ÃèÊö:´¥Ãþ°´¼ü´¦Àíº¯Êý
-  13          *·µ»Ø:ÎÞ
-  14          *******************************************************************************/
-  15          static void Key_Handle(void)
-  16          {
-  17   1             if(get_key_data!=0)  //¼ü°´ÏÂ
-  18   1             {
-  19   2                           MyKey_Buf_Data = get_key_data;
-  20   2                           if((TK1_VALUE == MyKey_Buf_Data)&&(lock))
-  21   2                           {
-  22   3                             if(key_press)
-  23   3                             {
-  24   4                                  key_press = 0;
-  25   4                                  Foot_Led_Cmd();      
-  26   4                             }
-  27   3                           }
-  28   2                           else if((TK2_VALUE == MyKey_Buf_Data)&&(lock))
-  29   2                           {
-  30   3                             if(key_press)
-  31   3                             {
-  32   4                                  key_press = 0;
-  33   4                                  Cup_Open_Cmd();                    
-  34   4                             }
-  35   3                           }
-  36   2                           else if((TK3_VALUE == MyKey_Buf_Data)&&(lock))
-  37   2                           {
-  38   3                             if(key_press)
-  39   3                             {
-  40   4                                  key_press = 0;
-  41   4                                  PushB_Open_Cmd();                  
-  42   4                             }
-  43   3                           }
-  44   2                           else if((TK4_VALUE == MyKey_Buf_Data)&&(lock))
-  45   2                           {
-  46   3                             if(key_press)
-  47   3                             {
-  48   4                                  key_press = 0;
-  49   4                                  Push_Reset_Cmd();                  
-  50   4                             }
-  51   3                           }
-  52   2                           else if(TK5_VALUE == MyKey_Buf_Data)
-  53   2                           {
-  54   3                             if(key_press)
-C51 COMPILER V9.59.0.0   KEY                                                               04/27/2019 08:30:02 PAGE 2   
+   5          extern unsigned long int MyKey_Buf_Data;
+   6          
+   7          
+   8          unsigned long int  get_key_data,RevGetData;
+   9          unsigned int u16TimeLock;
+  10          unsigned char lock;
+  11          /******************************************************************************
+  12          *×÷Õß:PETER
+  13          *ÈÕÆÚ:190308
+  14          *ÃèÊö:´¥Ãþ°´¼ü´¦Àíº¯Êý
+  15          *·µ»Ø:ÎÞ
+  16          *******************************************************************************/
+  17          static void Key_Handle(void)
+  18          {
+  19   1             if(get_key_data != 0)       //¼ü°´ÏÂ
+  20   1             {
+  21   2                           MyKey_Buf_Data = get_key_data;
+  22   2                           if((TK1_VALUE == MyKey_Buf_Data)&&(lock))
+  23   2                           {
+  24   3                             if(key_press)
+  25   3                             {
+  26   4                                  key_press = 0;
+  27   4                                  Foot_Led_Cmd();      
+  28   4                             }
+  29   3                           }
+  30   2                           else if((TK2_VALUE == MyKey_Buf_Data)&&(lock))
+  31   2                           {
+  32   3                             if(key_press)
+  33   3                             {
+  34   4                                  key_press = 0;
+  35   4                                  Cup_Open_Cmd();                    
+  36   4                             }
+  37   3                           }
+  38   2                           else if((TK3_VALUE == MyKey_Buf_Data)&&(lock))
+  39   2                           {
+  40   3                             if(key_press)
+  41   3                             {
+  42   4                                  key_press = 0;
+  43   4                                  PushB_Open_Cmd();                  
+  44   4                             }
+  45   3                           }
+  46   2                           else if((TK4_VALUE == MyKey_Buf_Data)&&(lock))
+  47   2                           {
+  48   3                             if(key_press)
+  49   3                             {
+  50   4                                  key_press = 0;
+  51   4                                  Push_Reset_Cmd();                  
+  52   4                             }
+  53   3                           }
+  54   2                           else if(TK5_VALUE == MyKey_Buf_Data)
+C51 COMPILER V9.59.0.0   KEY                                                               05/07/2019 09:57:16 PAGE 2   
 
-  55   3                             {               
-  56   4                                  key_press = 0;
-  57   4                             }
-  58   3                           }
-  59   2                           else if((TK6_VALUE == MyKey_Buf_Data)&&(lock))
-  60   2                           {
-  61   3                             if(key_press)
-  62   3                             {
-  63   4                                  key_press = 0;
-  64   4                                  PushA_Open_Cmd();
-  65   4                             }
-  66   3                             
-  67   3                           }
-  68   2                           else if((TK7_VALUE == MyKey_Buf_Data)&&(lock))
-  69   2                           {
-  70   3                             if(key_press)
-  71   3                             {
-  72   4                                  key_press = 0;
-  73   4                                  PushA_Close_Cmd();   
-  74   4                             }
-  75   3                             
-  76   3                           }
-  77   2                           else if((TK8_VALUE == MyKey_Buf_Data)&&(lock))
-  78   2                           {
-  79   3                             if(key_press)
-  80   3                             {
-  81   4                                  key_press = 0;
-  82   4                                  PushB_Close_Cmd();   
-  83   4                             }
-  84   3                            
-  85   3                           }
-  86   2                           else if((0X0100 == MyKey_Buf_Data)&&(lock))
-  87   2                           {
-  88   3                             if(key_press)
-  89   3                             {
-  90   4                                  key_press = 0;
-  91   4                                  PushC_Open_Cmd();    
-  92   4                             }
-  93   3                             
-  94   3                           }
-  95   2                           else if((0X0200 == MyKey_Buf_Data)&&(lock))
-  96   2                           {
-  97   3                             if(key_press)
-  98   3                             {
-  99   4                                  key_press = 0;
- 100   4                                  PushC_Close_Cmd();                 
- 101   4                             }
- 102   3                           }
- 103   2                }
- 104   1             else
- 105   1             {
- 106   2                    if(!key_press)
- 107   2                    {
- 108   3                           key_press = 1;
- 109   3                          TX_DATA = 0X55;
- 110   3                          TX1_DATA = 0X00;
- 111   3                    }
- 112   2             }
- 113   1             #if 1
- 114   1             if(RevData_If())
- 115   1             {
- 116   2                    RevGetData = (unsigned long)Get32Bit(RevString[2],RevString[3]);
-C51 COMPILER V9.59.0.0   KEY                                                               04/27/2019 08:30:02 PAGE 3   
+  55   2                           {
+  56   3                             if(key_press)
+  57   3                             {               
+  58   4                                  key_press = 0;
+  59   4                             }
+  60   3                           }
+  61   2                           else if((TK6_VALUE == MyKey_Buf_Data)&&(lock))
+  62   2                           {
+  63   3                             if(key_press)
+  64   3                             {
+  65   4                                  key_press = 0;
+  66   4                                  PushA_Open_Cmd();
+  67   4                             }
+  68   3                             
+  69   3                           }
+  70   2                           else if((TK7_VALUE == MyKey_Buf_Data)&&(lock))
+  71   2                           {
+  72   3                             if(key_press)
+  73   3                             {
+  74   4                                  key_press = 0;
+  75   4                                  PushA_Close_Cmd();   
+  76   4                             }
+  77   3                             
+  78   3                           }
+  79   2                           else if((TK8_VALUE == MyKey_Buf_Data)&&(lock))
+  80   2                           {
+  81   3                             if(key_press)
+  82   3                             {
+  83   4                                  key_press = 0;
+  84   4                                  PushB_Close_Cmd();   
+  85   4                             }
+  86   3                            
+  87   3                           }
+  88   2                           else if((0X0100 == MyKey_Buf_Data)&&(lock))
+  89   2                           {
+  90   3                             if(key_press)
+  91   3                             {
+  92   4                                  key_press = 0;
+  93   4                                  PushC_Open_Cmd();    
+  94   4                             }
+  95   3                             
+  96   3                           }
+  97   2                           else if((0X0200 == MyKey_Buf_Data)&&(lock))
+  98   2                           {
+  99   3                             if(key_press)
+ 100   3                             {
+ 101   4                                  key_press = 0;
+ 102   4                                  PushC_Close_Cmd();                 
+ 103   4                             }
+ 104   3                           }
+ 105   2                }
+ 106   1             else
+ 107   1             {
+ 108   2                    MyKey_Buf_Data = 0x0000;
+ 109   2                    if(!key_press)
+ 110   2                    {
+ 111   3                           key_press = 1;
+ 112   3                          TX_DATA = 0X55;
+ 113   3                          TX1_DATA = 0X00;
+ 114   3                    }
+ 115   2             }
+ 116   1             #if 1
+C51 COMPILER V9.59.0.0   KEY                                                               05/07/2019 09:57:16 PAGE 3   
 
- 117   2                    memset(&RevString,0,sizeof(RevString));
- 118   2                    switch (RevGetData)
- 119   2                    {
- 120   3                           case ExtiLedOpenData:
- 121   3                                                key_press = 1;
- 122   3                                                TX_DATA = LedOpenData;      //ÍùÏÂ·¢µÄÖ¸Áî
- 123   3                                                count_level = 100;
- 124   3                                               break;
- 125   3                           case ExtiLedCloseData:
- 126   3                                                key_press = 1;
- 127   3                                                TX_DATA = LedCloseData;     //ÍùÏÂ·¢µÄÖ¸Áî
- 128   3                                                count_level = 15;
- 129   3                                               break;
- 130   3                            default:
- 131   3                                             break;
- 132   3                    }
- 133   2             }
- 134   1             #endif
- 135   1      }
- 136          
- 137          /******************************************************************************
- 138          *×÷Õß:PETER
- 139          *ÈÕÆÚ:190308
- 140          *ÃèÊö:´¥Ãþ°´¼üÉ¨Ãèº¯Êý
- 141          *·µ»Ø:ÎÞ
- 142          *******************************************************************************/
- 143          void Key_Scanf(void)
- 144          {
- 145   1             WDTCON|=0x10;
- 146   1             if(SOCAPI_TouchKeyStatus&0x80) // ÖØÒª²½Öè 2: ´¥Ãþ¼üÉ¨ÃèÒ»ÂÖ±êÖ¾£¬ÊÇ·ñµ÷ÓÃ TouchKeyScan() Ò»¶¨Òª¸ù¾Ý´Ë±êÖ
+ 117   1             if(RevData_If())
+ 118   1             {
+ 119   2                    RevGetData = (unsigned long)Get32Bit(RevString[2],RevString[3]);
+ 120   2                    memset(&RevString,0,sizeof(RevString));
+ 121   2                    switch (RevGetData)
+ 122   2                    {
+ 123   3                           case ExtiLedOpenData:
+ 124   3                                                key_press = 1;
+ 125   3                                                TX_DATA = LedOpenData;      //ÍùÏÂ·¢µÄÖ¸Áî
+ 126   3                                                count_level = 100;
+ 127   3                                               break;
+ 128   3                           case ExtiLedCloseData:
+ 129   3                                                key_press = 1;
+ 130   3                                                TX_DATA = LedCloseData;     //ÍùÏÂ·¢µÄÖ¸Áî
+ 131   3                                                count_level = 15;
+ 132   3                                               break;
+ 133   3                            default:
+ 134   3                                             break;
+ 135   3                    }
+ 136   2             }
+ 137   1             #endif
+ 138   1      }
+ 139          
+ 140          void Lock_Handle(void)
+ 141          {
+ 142   1              static unsigned char LockTempFlag,LockTempCnt;
+ 143   1              if(0X4000 == MyKey_Buf_Data)
+ 144   1              {
+ 145   2                    if(!LockTempFlag)
+ 146   2                    {
+ 147   3                           LockTempFlag = 1;
+ 148   3                           ++ LockTempCnt;
+ 149   3                    }
+ 150   2                    if(LockTempCnt & 0x01)
+ 151   2                    {
+ 152   3                           lock = 0;
+ 153   3                    }
+ 154   2                    else
+ 155   2                    {
+ 156   3                           lock = 1;
+ 157   3                    }
+ 158   2                    if(!lock)
+ 159   2                    {
+ 160   3                       if(u16TimeLock < 3000)
+ 161   3                       {
+ 162   4                          u16TimeLock++;
+ 163   4                       }
+ 164   3                       else
+ 165   3                       {
+ 166   4                          u16TimeLock = 0;
+ 167   4                             IO_RED_LIGHT_ON;
+ 168   4                       }
+ 169   3                    }
+ 170   2                    else
+ 171   2                    {
+ 172   3                       if(u16TimeLock < 3000)
+ 173   3                       {
+ 174   4                          u16TimeLock++;
+ 175   4                       }
+ 176   3                       else
+ 177   3                       {
+ 178   4                          u16TimeLock = 0;
+C51 COMPILER V9.59.0.0   KEY                                                               05/07/2019 09:57:16 PAGE 4   
+
+ 179   4                             IO_RED_LIGHT_OFF;
+ 180   4                       }
+ 181   3                    }
+ 182   2              }
+ 183   1              else
+ 184   1              {
+ 185   2                    LockTempFlag = 0;
+ 186   2              }
+ 187   1      }
+ 188          
+ 189          /******************************************************************************
+ 190          *×÷Õß:PETER
+ 191          *ÈÕÆÚ:190308
+ 192          *ÃèÊö:´¥Ãþ°´¼üÉ¨Ãèº¯Êý
+ 193          *·µ»Ø:ÎÞ
+ 194          *******************************************************************************/
+ 195          void Key_Scanf(void)
+ 196          {
+ 197   1             WDTCON|=0x10;
+ 198   1             if(SOCAPI_TouchKeyStatus&0x80) // ÖØÒª²½Öè 2: ´¥Ãþ¼üÉ¨ÃèÒ»ÂÖ±êÖ¾£¬ÊÇ·ñµ÷ÓÃ TouchKeyScan() Ò»¶¨Òª¸ù¾Ý´Ë±êÖ
              -¾Î»ÖÃÆðºó
- 147   1            {
- 148   2                    SOCAPI_TouchKeyStatus &= 0x7f;// ÖØÒª²½Öè 3:  Çå³ý±êÖ¾Î»£¬ ÐèÒªÍâ²¿Çå³ý¡£
- 149   2                    get_key_data = TouchKeyScan();// °´¼üÊý¾Ý´¦Àíº¯Êý
- 150   2                    TouchKeyRestart();// Æô¶¯ÏÂÒ»ÂÖ×ª»»
- 151   2             }
- 152   1             Key_Handle();
- 153   1      }
- 154          
- 155          
- 156          
- 157          
- 158          
- 159          
- 160          
- 161          
- 162          
- 163          
- 164          
- 165          
- 166          
- 167          
- 168          
- 169          
- 170          
- 171          
- 172          
+ 199   1          {
+ 200   2                    SOCAPI_TouchKeyStatus &= 0x7f;// ÖØÒª²½Öè 3:  Çå³ý±êÖ¾Î»£¬ ÐèÒªÍâ²¿Çå³ý¡£
+ 201   2                    get_key_data = TouchKeyScan();// °´¼üÊý¾Ý´¦Àíº¯Êý
+ 202   2                    TouchKeyRestart();//Æô¶¯ÏÂÒ»ÂÖ×ª»»
+ 203   2             }
+ 204   1             Key_Handle();
+ 205   1      }
+ 206          
+ 207          
+ 208          
+ 209          
+ 210          
+ 211          
+ 212          
+ 213          
+ 214          
+ 215          
+ 216          
+ 217          
+ 218          
+ 219          
+ 220          
+ 221          
+ 222          
+ 223          
+ 224          
+ 225          
+ 226          
+ 227          
+ 228          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    599    ----
+   CODE SIZE        =    721    ----
    CONSTANT SIZE    =   ----    ----
-C51 COMPILER V9.59.0.0   KEY                                                               04/27/2019 08:30:02 PAGE 4   
-
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      8    ----
+   DATA SIZE        =     13    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
+
+C51 COMPILER V9.59.0.0   KEY                                                               05/07/2019 09:57:16 PAGE 5   
 
 
 C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

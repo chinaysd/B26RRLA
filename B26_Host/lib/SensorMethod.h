@@ -30,9 +30,12 @@ extern  unsigned 	char    xdata   ICHG_RawData_Ratio;
 
 //低功耗处理函数
 extern bit  LowPowerScan_Flag;
-extern void LowPower_Touchkey_Scan(void);
+//extern void LowPower_Touchkey_Scan(void);
+#if 0
 extern void TouchKey_IntoLowPowerMode(void);
 extern void TouchKey_QuitLowPowerMode(void);
+
+#endif
 
 //外部调用函数
 extern	void  TouchKeyInit(void);									//触摸按键初始化

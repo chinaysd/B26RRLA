@@ -16,6 +16,8 @@
 
 
 void Key_Scanf(void);
+void Lock_Handle(void);
+
 
 
 

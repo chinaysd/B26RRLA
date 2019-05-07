@@ -1,15 +1,15 @@
 #include "INIT.H"
 #include "SC92F836xB_C.H"
-#include "bsp_io_data.h"
 #include "TimeOut.h"
+#include "key.h"
 
-unsigned char count_250us_time,count_level,lock = 1;
+
+unsigned char count_250us_time,count_level;
 unsigned int   count_1ms_time;
 extern unsigned int motro_count0,
 	                     motro_count1,
 	                     auto_close_heat_cnt,
-	                     auto_close_mass_cnt,
-	                     u16TimeLock;
+	                     auto_close_mass_cnt;
 
 extern unsigned char TX_DATA;
 
@@ -17,8 +17,6 @@ extern unsigned char up_flag,
 	                       down_flag,
 	                       auto_close_heat,
 	                       auto_close_mass;
-
-extern unsigned long MyKey_Buf_Data;
 
 
 
@@ -28,7 +26,7 @@ void GPIO_INIT(void)
   P2CON |= 1 << 5;		       //设置P25为强推挽IO
 
   IO_LED_FOOT_LIGHT_OFF;	     //脚灯关闭
-  IO_RED_LIGHT_OFF;           //红灯关闭
+  IO_RED_LIGHT_OFF;              //红灯关闭
   IO_MOTOR_ONE_OFF;			 //升降马达1关闭
   IO_MOTOR_TWO_OFF;			 //升降马达2关闭
 }
@@ -68,35 +66,7 @@ void timer0() interrupt 1         //2MS
 	   IO_LED_FOOT_LIGHT_ON;
 	 }	
 	 /*****************************锁键定时器************************/
-     if((0X4000 == MyKey_Buf_Data)&&(1 == lock))
-	 {
-	   MyKey_Buf_Data = 0x1111;
-	   if(u16TimeLock < 1000)
-	   {
-	      u16TimeLock++;
-	   }
-	   else
-	   {
-	         u16TimeLock = 0;
-		  IO_RED_LIGHT_ON;
-		  lock = 0;
-	   }
-	 }
-	 else if((0X4000 == MyKey_Buf_Data)&&(0 == lock))
-	 {
-	   MyKey_Buf_Data = 0x1111;
-	   if(u16TimeLock < 1000)
-	   {
-	      u16TimeLock++;
-	   }
-	   else
-	   {
-	        u16TimeLock = 0;
-		  IO_RED_LIGHT_OFF;
-		  lock = 1;
-	   }
-	 }
-
+	 Lock_Handle();
 /***************************************************************/
 	if(up_flag)
 	{

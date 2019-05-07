@@ -10,6 +10,8 @@ extern unsigned char count_level,lock;
 *描述:系统函数初始化
 *返回:无
 *******************************************************************************/
+
+
 void System_Init(void)
 {
     TimeOutDet_Init();
@@ -30,10 +32,12 @@ void System_Init(void)
 *描述:系统处理函数
 *返回:无
 *******************************************************************************/
+
+
 void System_Handle(void)
 {
 	WDTCON |= 0x10;
-       Key_Scanf();
+    Key_Scanf();
 	if(TimeOutDet_Check(&TimeOut_Para[0]))      
 	{
 		TimeOut_Record( &TimeOut_Para[0],OnLine_Time);

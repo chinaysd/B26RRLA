@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 1   
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE S_TOUCHKEYCFG
@@ -62,7 +62,7 @@ line level    source
   52          unsigned      char    xdata        RestAreaCnt[SOCAPI_SET_TOUCHKEY_TOTAL];                 
   53          unsigned      char    xdata        TouchCnt[SOCAPI_SET_TOUCHKEY_TOTAL];                           
   54          unsigned      char    xdata        NoTouchCnt[SOCAPI_SET_TOUCHKEY_TOTAL];                  
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 2   
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 2   
 
   55          unsigned      char   xdata         CurrentChannel[SOCAPI_SET_TOUCHKEY_TOTAL];                                               
   56          unsigned    char    xdata       LowFingerDataCnt[SOCAPI_SET_TOUCHKEY_TOTAL];
@@ -126,7 +126,7 @@ line level    source
  113          
  114          #define     TK_LowPowerMode                
  115          
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 3   
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 3   
 
  116          #ifdef  TK_LowPowerMode
  117          typedef enum
@@ -147,8 +147,8 @@ line level    source
  132          
  133          #define      WakeUpKeyNum                      1                    //低功耗模式下扫描按键个数     
  134          #define      WakeUpKeyChannel                  0x00000200           //低功耗下扫描按键的对应通道
- 135          #define      TK_SeepTimervSetting              BTM_TIMEBASE_125MS   //低功耗下按键之间的扫描间隔
- 136          #define      TK_WakeUpConfirmTouchCnt          8                                    //低功耗下确认按键次数
+ 135          #define      TK_SeepTimervSetting              BTM_TIMEBASE_15600US   //低功耗下按键之间的扫描间隔
+ 136          #define      TK_WakeUpConfirmTouchCnt          1                                    //低功耗下确认按键次数
  137                                                                                       
  138          bit  LowPowerScan_Flag = 0;                                         //低功耗扫描标志
  139          bit  SingleKeyFastScan_Flag = 0;                                    //单按键快速扫描标志
@@ -156,576 +156,591 @@ line level    source
  141          unsigned    char    idata       WakeUpKey_List[WakeUpKeyNum];
  142          unsigned      char   idata             WakeUpKey_Index;
  143          unsigned      char   idata             WakeUpThenScanCount = 0; 
- 144          extern void Customer_IntoLowPowerMode_Init(void);
- 145          extern void Customer_QuitLowPowerMode_Init(void);
- 146          extern void Customer_BTM_Dispose(void);
- 147          extern unsigned  long       int    data          KeyFlag;
- 148          
- 149          //**********************************************************************************
- 150          
- 151          /**************************************************
- 152          *函数名称：void BtmInit(void) 
- 153          *函数功能：
- 154          *入口参数：void 
- 155          *出口参数：void
- 156          **************************************************/
- 157          void BTM_Init(void)
- 158          {
- 159   1          BTMCON = BTMCON & 0XF0 | TK_SeepTimervSetting;
- 160   1             TK_IE1 |= 0X04;
- 161   1      }
- 162          /**************************************************
- 163          *函数名称：void BtmInit(void) interrupt   0
- 164          *函数功能：Btm中断服务函数
- 165          *入口参数：void 
- 166          *出口参数：void
- 167          **************************************************/
- 168          void BtmInit(void) interrupt       9
- 169          {
- 170   1         BTMCON &= (~0X40); 
- 171   1         BTMCON &= (~0X80); 
- 172   1         BTM_WakeUpFlag = 1;    
- 173   1      }
- 174          #endif
- 175          
- 176          
- 177          //**********************************************************************************       
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 4   
+ 144          #if 0
+              extern void Customer_IntoLowPowerMode_Init(void);
+              extern void Customer_QuitLowPowerMode_Init(void);
+              extern void Customer_BTM_Dispose(void);
+              
+              #endif
+ 150          extern unsigned  long       int    data          KeyFlag;
+ 151          
+ 152          //**********************************************************************************
+ 153          
+ 154          /**************************************************
+ 155          *函数名称：void BtmInit(void) 
+ 156          *函数功能：
+ 157          *入口参数：void 
+ 158          *出口参数：void
+ 159          **************************************************/
+ 160          void BTM_Init(void)
+ 161          {
+ 162   1          BTMCON = BTMCON & 0XF0 | TK_SeepTimervSetting;
+ 163   1             TK_IE1 |= 0X04;
+ 164   1      }
+ 165          /**************************************************
+ 166          *函数名称：void BtmInit(void) interrupt   0
+ 167          *函数功能：Btm中断服务函数
+ 168          *入口参数：void 
+ 169          *出口参数：void
+ 170          **************************************************/
+ 171          void BtmInit(void) interrupt       9
+ 172          {
+ 173   1         BTMCON &= (~0X40); 
+ 174   1         BTMCON &= (~0X80); 
+ 175   1         BTM_WakeUpFlag = 1;    
+ 176   1      }
+ 177          #endif
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 4   
 
- 178          //                                                      函数接口调用部分                                                        //
- 179          //**********************************************************************************
- 180          /**************************************************
- 181          *函数名称：unsigned int SetOneKeyPushResetTime(void) 
- 182          *函数功能：按键最长的输出时间
- 183          *入口参数：void
- 184          *出口参数：unsigned int SOCAPI_SET_KEY_CONTI_TIME
- 185          *备注   ：这个返回值的设置， 是根据有多长时间启动TouchKeyRestart（）一次
- 186          例如10ms 启动一次， 那SOCAPI_SET_KEY_CONTI_TIME*10ms，超过时间后此按键无效。
- 187          **************************************************/
- 188          unsigned int SetOneKeyPushResetTime(void)   
- 189          {        
- 190   1             return  TKCFG[SET_KEY_CONTI_TIME];
- 191   1      }
- 192          /**************************************************
- 193          *函数名称：unsignedint  GetBaselineUpdateThreshold(void)
- 194          *函数功能：更新速度 
- 195          *入口参数：void
- 196          *出口参数：unsigned  int 
- 197          *备注   ：
- 198          **************************************************/
- 199          unsigned int  GetBaselineUpdateThreshold(void)
- 200          {
- 201   1             return TKCFG[SET_UPDATE_SPEED]; 
- 202   1      }
- 203          
- 204          /**************************************************
- 205          *函数名称：unsigned char GetInitAutoUpdateTime(void)
- 206          *函数功能：初始化自动校准次数
- 207          *入口参数：void
- 208          *出口参数：unsigned  char 
- 209          *备注   ：
- 210          **************************************************/
- 211          unsigned char GetInitAutoUpdateTime(void)
- 212          {
- 213   1             return  TKCFG[INIT_AUTO_UPDATE_TIME];
- 214   1      }
- 215          /**************************************************
- 216          *函数名称：unsigned char GetCsFunction(void)
- 217          *函数功能：进行CS 测试
- 218          *入口参数：void
- 219          *出口参数：char SOCAPI_SET_CS_FUNCTION
- 220          *备注   ：
- 221          **************************************************/
- 222          unsigned char GetCsFunction(void)
- 223          {
- 224   1             return SOCAPI_SET_CS_FUNCTION; 
- 225   1      }
- 226          /**************************************************
- 227          *函数名称：int  GetCurrFingerValue(unsigned char i)
- 228          *函数功能：获取当前的finger 值
- 229          *入口参数：unsigned char
- 230          *出口参数：int 
- 231          *备注   ：
- 232          **************************************************/
- 233          unsigned int   GetCurrFingerValue(unsigned char i)
- 234          { 
- 235   1             return TKChannelCfg[i][FINGER_THRESHOLD_H]*256+TKChannelCfg[i][FINGER_THRESHOLD_L] ;
- 236   1      }
- 237          
- 238          /**************************************************
- 239          *函数名称：unsigned char  GetScanTimeValue(unsigned char i)
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 5   
+ 178          
+ 179          
+ 180          //**********************************************************************************       
+ 181          //                                                      函数接口调用部分                                                        //
+ 182          //**********************************************************************************
+ 183          /**************************************************
+ 184          *函数名称：unsigned int SetOneKeyPushResetTime(void) 
+ 185          *函数功能：按键最长的输出时间
+ 186          *入口参数：void
+ 187          *出口参数：unsigned int SOCAPI_SET_KEY_CONTI_TIME
+ 188          *备注   ：这个返回值的设置， 是根据有多长时间启动TouchKeyRestart（）一次
+ 189          例如10ms 启动一次， 那SOCAPI_SET_KEY_CONTI_TIME*10ms，超过时间后此按键无效。
+ 190          **************************************************/
+ 191          unsigned int SetOneKeyPushResetTime(void)   
+ 192          {        
+ 193   1             return  TKCFG[SET_KEY_CONTI_TIME];
+ 194   1      }
+ 195          /**************************************************
+ 196          *函数名称：unsignedint  GetBaselineUpdateThreshold(void)
+ 197          *函数功能：更新速度 
+ 198          *入口参数：void
+ 199          *出口参数：unsigned  int 
+ 200          *备注   ：
+ 201          **************************************************/
+ 202          unsigned int  GetBaselineUpdateThreshold(void)
+ 203          {
+ 204   1             return TKCFG[SET_UPDATE_SPEED]; 
+ 205   1      }
+ 206          
+ 207          /**************************************************
+ 208          *函数名称：unsigned char GetInitAutoUpdateTime(void)
+ 209          *函数功能：初始化自动校准次数
+ 210          *入口参数：void
+ 211          *出口参数：unsigned  char 
+ 212          *备注   ：
+ 213          **************************************************/
+ 214          unsigned char GetInitAutoUpdateTime(void)
+ 215          {
+ 216   1             return  TKCFG[INIT_AUTO_UPDATE_TIME];
+ 217   1      }
+ 218          /**************************************************
+ 219          *函数名称：unsigned char GetCsFunction(void)
+ 220          *函数功能：进行CS 测试
+ 221          *入口参数：void
+ 222          *出口参数：char SOCAPI_SET_CS_FUNCTION
+ 223          *备注   ：
+ 224          **************************************************/
+ 225          unsigned char GetCsFunction(void)
+ 226          {
+ 227   1             return SOCAPI_SET_CS_FUNCTION; 
+ 228   1      }
+ 229          /**************************************************
+ 230          *函数名称：int  GetCurrFingerValue(unsigned char i)
+ 231          *函数功能：获取当前的finger 值
+ 232          *入口参数：unsigned char
+ 233          *出口参数：int 
+ 234          *备注   ：
+ 235          **************************************************/
+ 236          unsigned int   GetCurrFingerValue(unsigned char i)
+ 237          { 
+ 238   1             return TKChannelCfg[i][FINGER_THRESHOLD_H]*256+TKChannelCfg[i][FINGER_THRESHOLD_L] ;
+ 239   1      }
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 5   
 
- 240          *函数功能：获取当前通道的扫描时间
- 241          *入口参数：unsigned char
- 242          *出口参数：unsigned char 
- 243          *备注   ：
- 244          **************************************************/
- 245          unsigned char  GetScanTimeValue(unsigned char i)
- 246          { 
- 247   1             return TKChannelCfg[i][SCANTIME];
- 248   1      }
- 249          /**************************************************
- 250          *函数名称：unsigned char IsDoubleKeyOrSlideKey(void)
- 251          *函数功能：检测是否是弹簧滑条或者双键
- 252          *入口参数：void
- 253          *出口参数：unsigned char 
- 254          *备注   ：
- 255          **************************************************/
- 256          unsigned char IsDoubleKeyOrSlideKey(void)
- 257          {
- 258   1          return TKCFG[IsDoubleKey];
- 259   1      }
- 260          /**************************************************
- 261          *函数名称：unsigned char  GetBaseLineAdjustValue(unsigned char i)
- 262          *函数功能：获取当前通道的基线调整
- 263          j
- 264          *入口参数：unsigned char
- 265          *出口参数：unsigned char 
- 266          *备注   ：
- 267          **************************************************/
- 268          unsigned char  GetBaseLineAdjustValue(unsigned char i)
- 269          {      
- 270   1          return BaseLineAdjusttmp[i]; 
- 271   1      }
- 272          /**************************************************
- 273          *函数名称：unsigned char GetUpConfirmCnt(void)
- 274          *函数功能：检测按键弹起次数
- 275          *入口参数：void
- 276          *出口参数：返回按键弹起确认次数 
- 277          *备注   ：
- 278          **************************************************/
- 279          unsigned char GetUpConfirmCnt(void)
- 280          {
- 281   1             return ConfirmTouchCnt>>1;
- 282   1      }
- 283          /**************************************************
- 284          *函数名称：unsigned char GetTKYzCnt(void)
- 285          *函数功能：获取按键抑制确认次数
- 286          *入口参数：void
- 287          *出口参数：返回抑制次数 
- 288          *备注   ：
- 289          **************************************************/
- 290          unsigned char GetTKYzCnt(void)
- 291          {
- 292   1             return (ConfirmTouchCnt/3);
- 293   1      }
- 294          
- 295          /**************************************************
- 296          *函数名称：int GetTKYzThreshold(unsigned char i)
- 297          *函数功能：获取按键抑制区间
- 298          *入口参数：unsigned char i
- 299          *出口参数：返回抑制区间
- 300          *备注   ：
- 301          **************************************************/
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 6   
+ 240          
+ 241          /**************************************************
+ 242          *函数名称：unsigned char  GetScanTimeValue(unsigned char i)
+ 243          *函数功能：获取当前通道的扫描时间
+ 244          *入口参数：unsigned char
+ 245          *出口参数：unsigned char 
+ 246          *备注   ：
+ 247          **************************************************/
+ 248          unsigned char  GetScanTimeValue(unsigned char i)
+ 249          { 
+ 250   1             return TKChannelCfg[i][SCANTIME];
+ 251   1      }
+ 252          /**************************************************
+ 253          *函数名称：unsigned char IsDoubleKeyOrSlideKey(void)
+ 254          *函数功能：检测是否是弹簧滑条或者双键
+ 255          *入口参数：void
+ 256          *出口参数：unsigned char 
+ 257          *备注   ：
+ 258          **************************************************/
+ 259          unsigned char IsDoubleKeyOrSlideKey(void)
+ 260          {
+ 261   1          return TKCFG[IsDoubleKey];
+ 262   1      }
+ 263          /**************************************************
+ 264          *函数名称：unsigned char  GetBaseLineAdjustValue(unsigned char i)
+ 265          *函数功能：获取当前通道的基线调整
+ 266          j
+ 267          *入口参数：unsigned char
+ 268          *出口参数：unsigned char 
+ 269          *备注   ：
+ 270          **************************************************/
+ 271          #if 1
+ 272          unsigned char  GetBaseLineAdjustValue(unsigned char i)
+ 273          {      
+ 274   1          return BaseLineAdjusttmp[i]; 
+ 275   1      }
+ 276          #endif
+ 277          /**************************************************
+ 278          *函数名称：unsigned char GetUpConfirmCnt(void)
+ 279          *函数功能：检测按键弹起次数
+ 280          *入口参数：void
+ 281          *出口参数：返回按键弹起确认次数 
+ 282          *备注   ：
+ 283          **************************************************/
+ 284          unsigned char GetUpConfirmCnt(void)
+ 285          {
+ 286   1             return ConfirmTouchCnt>>1;
+ 287   1      }
+ 288          /**************************************************
+ 289          *函数名称：unsigned char GetTKYzCnt(void)
+ 290          *函数功能：获取按键抑制确认次数
+ 291          *入口参数：void
+ 292          *出口参数：返回抑制次数 
+ 293          *备注   ：
+ 294          **************************************************/
+ 295          unsigned char GetTKYzCnt(void)
+ 296          {
+ 297   1             return (ConfirmTouchCnt/3);
+ 298   1      }
+ 299          
+ 300          /**************************************************
+ 301          *函数名称：int GetTKYzThreshold(unsigned char i)
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 6   
 
- 302          unsigned int GetTKYzThreshold(unsigned char i)
- 303          {      
- 304   1             unsigned int SetFingerThresholdtmp; 
- 305   1             
- 306   1             SetFingerThresholdtmp = GetCurrFingerValue(i); 
- 307   1          SetFingerThresholdtmp = SetFingerThresholdtmp*SOCAPI_INHIBITION_ZONE/10;
- 308   1      
- 309   1             return SetFingerThresholdtmp;
- 310   1      }
- 311          /**************************************************
- 312          *函数名称：void CurrentSensorChoose(void)
- 313          *函数功能：当前通道选择
- 314          *入口参数：void
- 315          *出口参数：void
- 316          *备注   ：
- 317          **************************************************/
- 318          void CurrentSensorChoose(void)
- 319          {
- 320   1             unsigned char        i ;
- 321   1             unsigned char        Ctk_Channel_mark = 0;
- 322   1          unsigned char    WakeUpKey_Channel_mark = 0;
- 323   1             unsigned long int    CurrentSensorKey  ; 
- 324   1             CurrentSensorKey = SOCAPI_SET_TOUCHKEY_CHANNEL; 
- 325   1                    
- 326   1             for(i=0;i<23;i++)
- 327   1             {
- 328   2                    CurrentSensorKey=CurrentSensorKey>>1;
- 329   2                    if(TK_CY)
- 330   2                    {
- 331   3                           CurrentChannel[Ctk_Channel_mark] = i;                                        //选择触摸当前的通道
- 332   3                  #ifdef  TK_LowPowerMode
- 333   3                           if(WakeUpKey_Channel_mark<WakeUpKeyNum)
- 334   3                  {
- 335   4                      if((WakeUpKeyChannel&((unsigned long int)1<<i)))
- 336   4                      {
- 337   5                          WakeUpKey_List[WakeUpKey_Channel_mark++] = Ctk_Channel_mark;
- 338   5                      }
- 339   4                  }
- 340   3                  #endif
- 341   3                           Ctk_Channel_mark++;
- 342   3                           if(Ctk_Channel_mark >= SOCAPI_SET_TOUCHKEY_TOTAL)
- 343   3                                  break;
- 344   3                    }             
- 345   2             }
- 346   1             CurrentChannelMax = Ctk_Channel_mark;                                               //当前选择的按键数 
- 347   1      }
- 348          
- 349          /**************************************************
- 350          *函数名称：unsigned char  GetCfgMsg(unsigned char i)
- 351          *函数功能：获取Touch KEY 配置信息
- 352          *入口参数：void
- 353          *出口参数：int 
- 354          *备注   ：
- 355          **************************************************/
- 356          unsigned char  GetCfgMsg(unsigned char i)
- 357          {
- 358   1             switch(i)
- 359   1             { 
- 360   2                     case 0:  return TKChannelCfg[0][SET_TOUCH_FREQ];
- 361   2                     case 1:  return TKChannelCfg[0][SET_RESOLUTION];
- 362   2                     case 2:  return TKChannelCfg[0][SET_GAIN_CFG];
- 363   2                     case 3:  return TKChannelCfg[0][SET_GAIN_CFG];
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 7   
+ 302          *函数功能：获取按键抑制区间
+ 303          *入口参数：unsigned char i
+ 304          *出口参数：返回抑制区间
+ 305          *备注   ：
+ 306          **************************************************/
+ 307          unsigned int GetTKYzThreshold(unsigned char i)
+ 308          {      
+ 309   1             unsigned int SetFingerThresholdtmp; 
+ 310   1             
+ 311   1             SetFingerThresholdtmp = GetCurrFingerValue(i); 
+ 312   1          SetFingerThresholdtmp = SetFingerThresholdtmp*SOCAPI_INHIBITION_ZONE/10;
+ 313   1      
+ 314   1             return SetFingerThresholdtmp;
+ 315   1      }
+ 316          /**************************************************
+ 317          *函数名称：void CurrentSensorChoose(void)
+ 318          *函数功能：当前通道选择
+ 319          *入口参数：void
+ 320          *出口参数：void
+ 321          *备注   ：
+ 322          **************************************************/
+ 323          void CurrentSensorChoose(void)
+ 324          {
+ 325   1             unsigned char        i ;
+ 326   1             unsigned char        Ctk_Channel_mark = 0;
+ 327   1          unsigned char    WakeUpKey_Channel_mark = 0;
+ 328   1             unsigned long int    CurrentSensorKey  ; 
+ 329   1             CurrentSensorKey = SOCAPI_SET_TOUCHKEY_CHANNEL; 
+ 330   1                    
+ 331   1             for(i=0;i<23;i++)
+ 332   1             {
+ 333   2                    CurrentSensorKey=CurrentSensorKey>>1;
+ 334   2                    if(TK_CY)
+ 335   2                    {
+ 336   3                           CurrentChannel[Ctk_Channel_mark] = i;                                        //选择触摸当前的通道
+ 337   3                  #ifdef  TK_LowPowerMode
+ 338   3                           if(WakeUpKey_Channel_mark<WakeUpKeyNum)
+ 339   3                  {
+ 340   4                      if((WakeUpKeyChannel&((unsigned long int)1<<i)))
+ 341   4                      {
+ 342   5                          WakeUpKey_List[WakeUpKey_Channel_mark++] = Ctk_Channel_mark;
+ 343   5                      }
+ 344   4                  }
+ 345   3                  #endif
+ 346   3                           Ctk_Channel_mark++;
+ 347   3                           if(Ctk_Channel_mark >= SOCAPI_SET_TOUCHKEY_TOTAL)
+ 348   3                                  break;
+ 349   3                    }             
+ 350   2             }
+ 351   1             CurrentChannelMax = Ctk_Channel_mark;                                               //当前选择的按键数 
+ 352   1      }
+ 353          
+ 354          /**************************************************
+ 355          *函数名称：unsigned char  GetCfgMsg(unsigned char i)
+ 356          *函数功能：获取Touch KEY 配置信息
+ 357          *入口参数：void
+ 358          *出口参数：int 
+ 359          *备注   ：
+ 360          **************************************************/
+ 361          unsigned char  GetCfgMsg(unsigned char i)
+ 362          {
+ 363   1             switch(i)
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 7   
 
- 364   2                     case 4:  return TKCFG[SET_ANTIJAM];
- 365   2                     default:return 0;          
- 366   2             }
- 367   1      }
- 368          
- 369          /**************************************************
- 370          *函数名称：void CurrentSensorChoose(void)
- 371          *函数功能：初始化TK寄存器
- 372          *入口参数：void
- 373          *出口参数：void
- 374          *备注   ：
- 375          **************************************************/
- 376          void TouchKeyCFGInit(void)
- 377          {
- 378   1             unsigned char        i;
- 379   1             ConfirmTouchCnt = TKCFG[CONFIRMTOUCHCNT];
- 380   1             SetNoiseThreshold = TKCFG[NOISE];
- 381   1             CurrentSensorChoose(); 
- 382   1             for(i=0;i<CurrentChannelMax;i++)
- 383   1             {
- 384   2               BaseLineAdjusttmp[i] =TKChannelCfg[i][SET_ICHA];;     
- 385   2             } 
- 386   1             UpdateBaseLNum = 0; 
- 387   1          #ifdef  TK_LowPowerMode
- 388   1          BTM_Init();
- 389   1          #endif 
- 390   1      }
- 391          
- 392          /**************************************************
- 393          *函数名称：unsigned int TouchKeyScan(void)
- 394          *函数功能：检测按键接口
- 395          *入口参数：void
- 396          *出口参数：按键通道， 返回的是一个int , 通道数
- 397          *备注   ：1,  调用触控库检测函数SensorKeyFlag()
- 398                           2,  分析得出16个通道，哪个通道有按下，按下bit 位设置为1，否则为0
- 399                           3,  检测是否需要立即更新baseline:  大于MAX_KEY_RESET_BASELINE 个按键按下时立即更新baseline
- 400                           4,  双键或者单键按下时， 时间大于SetOneKeyPushResetTime()结果时更新baseline 
- 401          **************************************************/
- 402          unsigned long int TouchKeyScan(void)
- 403          {
- 404   1             unsigned char t;
- 405   1          unsigned char MultipleCnt = 0;//按键计数
- 406   1             unsigned long int Keyvalue ; 
- 407   1             unsigned long int KeyData = 0;     
- 408   1             if(WakeUp_Flag == 0)
- 409   1             {
- 410   2              if(GetIsNeedUpdateBaseline() == 0)                            //检测是否需要更新baseline 
- 411   2              {
- 412   3                  Keyvalue = SensorKeyFlag();                               //Sensor判断, 这里如果bMultiple = 1 表示中间有干扰       //分析按键
+ 364   1             { 
+ 365   2                     case 0:  return TKChannelCfg[0][SET_TOUCH_FREQ];
+ 366   2                     case 1:  return TKChannelCfg[0][SET_RESOLUTION];
+ 367   2                     case 2:  return TKChannelCfg[0][SET_GAIN_CFG];
+ 368   2                     case 3:  return TKChannelCfg[0][SET_GAIN_CFG];
+ 369   2                     case 4:  return TKCFG[SET_ANTIJAM];
+ 370   2                     default:return 0;          
+ 371   2             }
+ 372   1      }
+ 373          
+ 374          /**************************************************
+ 375          *函数名称：void CurrentSensorChoose(void)
+ 376          *函数功能：初始化TK寄存器
+ 377          *入口参数：void
+ 378          *出口参数：void
+ 379          *备注   ：
+ 380          **************************************************/
+ 381          void TouchKeyCFGInit(void)
+ 382          {
+ 383   1             unsigned char        i;
+ 384   1             ConfirmTouchCnt = TKCFG[CONFIRMTOUCHCNT];
+ 385   1             SetNoiseThreshold = TKCFG[NOISE];
+ 386   1             CurrentSensorChoose(); 
+ 387   1             for(i=0;i<CurrentChannelMax;i++)
+ 388   1             {
+ 389   2               BaseLineAdjusttmp[i] =TKChannelCfg[i][SET_ICHA];;     
+ 390   2             } 
+ 391   1             UpdateBaseLNum = 0; 
+ 392   1          #ifdef  TK_LowPowerMode
+ 393   1          BTM_Init();
+ 394   1          #endif 
+ 395   1      }
+ 396          
+ 397          /**************************************************
+ 398          *函数名称：unsigned int TouchKeyScan(void)
+ 399          *函数功能：检测按键接口
+ 400          *入口参数：void
+ 401          *出口参数：按键通道， 返回的是一个int , 通道数
+ 402          *备注   ：1,  调用触控库检测函数SensorKeyFlag()
+ 403                           2,  分析得出16个通道，哪个通道有按下，按下bit 位设置为1，否则为0
+ 404                           3,  检测是否需要立即更新baseline:  大于MAX_KEY_RESET_BASELINE 个按键按下时立即更新baseline
+ 405                           4,  双键或者单键按下时， 时间大于SetOneKeyPushResetTime()结果时更新baseline 
+ 406          **************************************************/
+ 407          unsigned long int TouchKeyScan(void)
+ 408          {
+ 409   1             unsigned char t;
+ 410   1          unsigned char MultipleCnt = 0;//按键计数
+ 411   1             unsigned long int Keyvalue ; 
+ 412   1             unsigned long int KeyData = 0;     
+ 413   1             if(WakeUp_Flag == 0)
+ 414   1             {
+ 415   2              if(GetIsNeedUpdateBaseline() == 0)                            //检测是否需要更新baseline 
+ 416   2              {
+ 417   3                  Keyvalue = SensorKeyFlag();                               //Sensor判断, 这里如果bMultiple = 1 表示中间有干扰       //分析按键
              -，得出标准的16通道bit 位                                                                      
- 413   3                  for(t=0;t<CurrentChannelMax;t++)
- 414   3                  {
- 415   4                      Keyvalue = Keyvalue>>1;
- 416   4                      if(TK_CY)
- 417   4                      {
- 418   5                          KeyData |= ((unsigned long int)0x01 << (CurrentChannel[t]));              
- 419   5                          MultipleCnt++;                                           
- 420   5                      }
- 421   4                  }                
- 422   3                  if(MultipleCnt >= 2)                                                                  //进入多按键处理
- 423   3                  {               
- 424   4                      bMultiple = 1;                   
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 8   
+ 418   3                  for(t=0;t<CurrentChannelMax;t++)
+ 419   3                  {
+ 420   4                      Keyvalue = Keyvalue>>1;
+ 421   4                      if(TK_CY)
+ 422   4                      {
+ 423   5                          KeyData |= ((unsigned long int)0x01 << (CurrentChannel[t]));              
+ 424   5                          MultipleCnt++;                                           
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 8   
 
- 425   4                      if(MultipleCnt >= SOCAPI_MAX_KEY_NUM_INVALID)
- 426   4                      {
- 427   5                          SetNeedUpdateBaseline();                                               // 立即更新baseline ,例如亚克力板盖上去
- 428   5                      }
- 429   4                      else
- 430   4                      {                                
- 431   5                          if(IsDoubleKeyOrSlideKey())
- 432   5                          {
- 433   6                              bMultiple = 0;
- 434   6                          }                             
- 435   5                      }                  
- 436   4                  }               
- 437   3      
- 438   3                  if(bMultiple == 0)                                               //进入按键判断
- 439   3                  {        
- 440   4                      if(KeyData != 0x0)                                 //单个按键达到多长时间就update baseline ,松手检测
- 441   4                      {                  
- 442   5                          UpdateBaseLNum++; 
- 443   5                      }
- 444   4                      else 
- 445   4                      {
- 446   5                          UpdateBaseLNum = 0;                            
- 447   5                      }                                  
- 448   4                  } 
- 449   3                  else
- 450   3                  {   
- 451   4                      //考虑基线更新            
- 452   4                      MultipleLNum++; 
- 453   4                      KeyData = 0x00;
- 454   4                  }
- 455   3      
- 456   3                  if(UpdateBaseLNum > SetOneKeyPushResetTime())        //按键超出最长输出时间更新基线
- 457   3                  {
- 458   4                      SetNeedUpdateBaseline(); 
- 459   4                      UpdateBaseLNum = 0;
- 460   4                  }
- 461   3                          
- 462   3                  if(MultipleLNum >SOCAPI_MAX_KEY_MUTIPLE)             //干扰计数大于最大计数更新基线
- 463   3                  {
- 464   4                      SetNeedUpdateBaseline(); 
- 465   4                      MultipleDealTpye = 1; 
- 466   4                      MultipleLNum = 0;
- 467   4                  }  
- 468   3              }                   
- 469   2              else
- 470   2              {
- 471   3                  MultipleDeal(TKCFG[AUTO_UPDATE_TIME]);                                                                     //基线复位处理
- 472   3              }  
- 473   2          }
- 474   1          else
- 475   1          {
- 476   2              #ifdef  TK_LowPowerMode
- 477   2                    Keyvalue = KeyFlag;
- 478   2              for(t=0;t<CurrentChannelMax;t++)
- 479   2              {                   
- 480   3                  FilterDataDeal(t);                                 //IIR滤波 
- 481   3                  Keyvalue = Keyvalue>>1;
- 482   3                  if(TK_CY)
- 483   3                  {
- 484   4                      KeyData |= ((unsigned long int)0x01 << (CurrentChannel[t]));                                           
+ 425   5                      }
+ 426   4                  }                
+ 427   3                  if(MultipleCnt >= 2)                                                                  //进入多按键处理
+ 428   3                  {               
+ 429   4                      bMultiple = 1;                   
+ 430   4                      if(MultipleCnt >= SOCAPI_MAX_KEY_NUM_INVALID)
+ 431   4                      {
+ 432   5                          SetNeedUpdateBaseline();                                               // 立即更新baseline ,例如亚克力板盖上去
+ 433   5                      }
+ 434   4                      else
+ 435   4                      {                                
+ 436   5                          if(IsDoubleKeyOrSlideKey())
+ 437   5                          {
+ 438   6                              bMultiple = 0;
+ 439   6                          }                             
+ 440   5                      }                  
+ 441   4                  }               
+ 442   3      
+ 443   3                  if(bMultiple == 0)                                               //进入按键判断
+ 444   3                  {        
+ 445   4                      if(KeyData != 0x0)                                 //单个按键达到多长时间就update baseline ,松手检测
+ 446   4                      {                  
+ 447   5                          UpdateBaseLNum++; 
+ 448   5                      }
+ 449   4                      else 
+ 450   4                      {
+ 451   5                          UpdateBaseLNum = 0;                            
+ 452   5                      }                                  
+ 453   4                  } 
+ 454   3                  else
+ 455   3                  {   
+ 456   4                      //考虑基线更新            
+ 457   4                      MultipleLNum++; 
+ 458   4                      KeyData = 0x00;
+ 459   4                  }
+ 460   3      
+ 461   3                  if(UpdateBaseLNum > SetOneKeyPushResetTime())        //按键超出最长输出时间更新基线
+ 462   3                  {
+ 463   4                      SetNeedUpdateBaseline(); 
+ 464   4                      UpdateBaseLNum = 0;
+ 465   4                  }
+ 466   3                          
+ 467   3                  if(MultipleLNum >SOCAPI_MAX_KEY_MUTIPLE)             //干扰计数大于最大计数更新基线
+ 468   3                  {
+ 469   4                      SetNeedUpdateBaseline(); 
+ 470   4                      MultipleDealTpye = 1; 
+ 471   4                      MultipleLNum = 0;
+ 472   4                  }  
+ 473   3              }                   
+ 474   2              else
+ 475   2              {
+ 476   3                  MultipleDeal(TKCFG[AUTO_UPDATE_TIME]);                                                                     //基线复位处理
+ 477   3              }  
+ 478   2          }
+ 479   1          else
+ 480   1          {
+ 481   2              #ifdef  TK_LowPowerMode
+ 482   2                    Keyvalue = KeyFlag;
+ 483   2              for(t=0;t<CurrentChannelMax;t++)
+ 484   2              {                   
+ 485   3                  FilterDataDeal(t);                                 //IIR滤波 
+ 486   3                  Keyvalue = Keyvalue>>1;
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 9   
+
+ 487   3                  if(TK_CY)
+ 488   3                  {
+ 489   4                      KeyData |= ((unsigned long int)0x01 << (CurrentChannel[t]));                                           
              -              
- 485   4                  }            
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 9   
+ 490   4                  }            
+ 491   3              }            
+ 492   2              WakeUpThenScanCount++;
+ 493   2              if(WakeUpThenScanCount>1)       //5
+ 494   2              {
+ 495   3                  WakeUpThenScanCount = 0;
+ 496   3                  for(t=0; t<CurrentChannelMax; t++)  //初始化Filter滤波
+ 497   3                  {
+ 498   4                      if(KeyFlag &((unsigned long int)1<<WakeUpKey_List[WakeUpKey_Index]))
+ 499   4                          continue;
+ 500   4                      BaseLine[t] = RawData[t];
+ 501   4                  }
+ 502   3                  WakeUp_Flag = 0;
+ 503   3              }
+ 504   2                    #endif
+ 505   2          }
+ 506   1             return KeyData;
+ 507   1      }
+ 508          /**************************************************
+ 509          *函数名称：void TouchKey_IntoLowPowerMode(void)
+ 510          *函数功能进入低功耗模式
+ 511          *入口参数：void
+ 512          *出口参数：void  
+ 513          **************************************************/
+ 514          #if 0
+              void TouchKey_IntoLowPowerMode(void)
+              {
+                  #ifdef  TK_LowPowerMode
+                  LowPowerScan_Flag = 1;
+                  WakeUp_Flag = 0;
+                  WakeUpKey_Index = 0;
+                  TK_IE1 = TK_IE1&(~0x10);                     //关闭TK中断
+                  //Customer_IntoLowPowerMode_Init();
+                  #endif
+              }
+              #endif
+ 526          
+ 527          /**************************************************
+ 528          *函数名称：void TouchKey_QuitLowPowerMode(void)
+ 529          *函数功能退出低功耗模式
+ 530          *入口参数：void
+ 531          *出口参数：void  
+ 532          **************************************************/
+ 533          #if 0
+              void TouchKey_QuitLowPowerMode(void)
+              {
+                  #ifdef  TK_LowPowerMode
+                   LowPowerScan_Flag = 0;
+                   WakeUp_Flag = 1;  
+                   TK_IE1 = TK_IE1|0x10;                       //使能触摸中断
+                   TKCR = 0x80|CurrentChannel[0]; 
+                   TRIG = 1; 
+                   //Customer_QuitLowPowerMode_Init();
+                  #endif
+              }
+              #endif
+ 546          /**************************************************
+ 547          *函数名称：void TouchKey_LowPower_Scan(void)
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 10  
 
- 486   3              }            
- 487   2              WakeUpThenScanCount++;
- 488   2              if(WakeUpThenScanCount>5)
- 489   2              {
- 490   3                  WakeUpThenScanCount = 0;
- 491   3                  for(t=0; t<CurrentChannelMax; t++)  //初始化Filter滤波
- 492   3                  {
- 493   4                      if(KeyFlag &((unsigned long int)1<<WakeUpKey_List[WakeUpKey_Index]))
- 494   4                          continue;
- 495   4                      BaseLine[t] = RawData[t];
- 496   4                  }
- 497   3                  WakeUp_Flag = 0;
- 498   3              }
- 499   2                    #endif
- 500   2          }
- 501   1             return KeyData;
- 502   1      }
- 503          /**************************************************
- 504          *函数名称：void TouchKey_IntoLowPowerMode(void)
- 505          *函数功能进入低功耗模式
- 506          *入口参数：void
- 507          *出口参数：void  
- 508          **************************************************/
- 509          void TouchKey_IntoLowPowerMode(void)
- 510          {
- 511   1          #ifdef  TK_LowPowerMode
- 512   1          LowPowerScan_Flag = 1;
- 513   1          WakeUp_Flag = 0;
- 514   1          WakeUpKey_Index = 0;
- 515   1          TK_IE1 = TK_IE1&(~0x10);                     //关闭TK中断
- 516   1          Customer_IntoLowPowerMode_Init();
- 517   1          #endif
- 518   1      }
- 519          
- 520          /**************************************************
- 521          *函数名称：void TouchKey_QuitLowPowerMode(void)
- 522          *函数功能退出低功耗模式
- 523          *入口参数：void
- 524          *出口参数：void  
- 525          **************************************************/
- 526          void TouchKey_QuitLowPowerMode(void)
- 527          {
- 528   1          #ifdef  TK_LowPowerMode
- 529   1           LowPowerScan_Flag = 0;
- 530   1           WakeUp_Flag = 1;  
- 531   1           TK_IE1 = TK_IE1|0x10;                       //使能触摸中断
- 532   1           TKCR = 0x80|CurrentChannel[0]; 
- 533   1           TRIG = 1; 
- 534   1           Customer_QuitLowPowerMode_Init();
- 535   1          #endif
- 536   1      }
- 537          
- 538          /**************************************************
- 539          *函数名称：void TouchKey_LowPower_Scan(void)
- 540          *函数功能低功耗扫描
- 541          *入口参数：void
- 542          *出口参数：void  
- 543          **************************************************/
- 544          void TouchKey_LowPower_Scan(void)
- 545          {
- 546   1          #ifdef  TK_LowPowerMode
- 547   1          TKCFG0 =  GetCfgMsg(2)*16+0;
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 10  
-
- 548   1          TKTM = ScanTime*GetScanTimeValue(WakeUpKey_List[WakeUpKey_Index])>>2;
- 549   1             TKCFG0 =  GetCfgMsg(2)*16+GetCfgMsg(0);
- 550   1          TKCFG1 = (TKCFG1&0X80) | GetBaseLineAdjustValue(WakeUpKey_List[WakeUpKey_Index]);
- 551   1          TKCR = 0x80|CurrentChannel[WakeUpKey_List[WakeUpKey_Index]]; 
- 552   1          TRIG = 1;           
- 553   1          #endif    
- 554   1      }
- 555          
- 556          /**************************************************
- 557          *函数名称：void TouchKey_LowPower_Dispose(void)
- 558          *函数功能低功耗扫描数据处理
- 559          *入口参数：void
- 560          *出口参数：void  
- 561          **************************************************/
- 562          void TouchKey_LowPower_Dispose(void)
- 563          {  
- 564   1           #ifdef  TK_LowPowerMode 
- 565   1           int differData; 
- 566   1           int SetFingerThresholdtmp;  
- 567   1           while(TRIF == 0);  
- 568   1           TRIF = 0; 
- 569   1              
- 570   1           RawData[WakeUpKey_List[WakeUpKey_Index]] = TKCNT<<2;
- 571   1           FilterDataDeal(WakeUpKey_List[WakeUpKey_Index]);
- 572   1           differData = RawData[WakeUpKey_List[WakeUpKey_Index]]-BaseLine[WakeUpKey_List[WakeUpKey_Index]] ;
- 573   1           SetFingerThresholdtmp = GetCurrFingerValue(WakeUpKey_List[WakeUpKey_Index]);
- 574   1           if(differData >= (SetFingerThresholdtmp ))
- 575   1           {
- 576   2               TouchCnt[WakeUpKey_List[WakeUpKey_Index]]++;        
- 577   2               SingleKeyFastScan_Flag = 1;       
- 578   2           } 
- 579   1           else
- 580   1           {      
- 581   2                BaseLine[WakeUpKey_List[WakeUpKey_Index]] =BaseLine[WakeUpKey_List[WakeUpKey_Index]]-(BaseLine[W
+ 548          *函数功能低功耗扫描
+ 549          *入口参数：void
+ 550          *出口参数：void  
+ 551          **************************************************/
+ 552          #if 0
+              void TouchKey_LowPower_Scan(void)
+              {
+                  #ifdef  TK_LowPowerMode
+                  TKCFG0 =  GetCfgMsg(2)*16+0;
+                  TKTM = ScanTime*GetScanTimeValue(WakeUpKey_List[WakeUpKey_Index])>>2;
+                     TKCFG0 =  GetCfgMsg(2)*16+GetCfgMsg(0);
+                  TKCFG1 = (TKCFG1&0X80) | GetBaseLineAdjustValue(WakeUpKey_List[WakeUpKey_Index]);
+                  TKCR = 0x80|CurrentChannel[WakeUpKey_List[WakeUpKey_Index]]; 
+                  TRIG = 1;           
+                  #endif    
+              }
+              #endif
+ 565          /**************************************************
+ 566          *函数名称：void TouchKey_LowPower_Dispose(void)
+ 567          *函数功能低功耗扫描数据处理
+ 568          *入口参数：void
+ 569          *出口参数：void  
+ 570          **************************************************/
+ 571          #if 0
+              void TouchKey_LowPower_Dispose(void)
+              {  
+                   #ifdef  TK_LowPowerMode 
+                   int differData; 
+                   int SetFingerThresholdtmp;  
+                   while(TRIF == 0);  
+                   TRIF = 0; 
+                      
+                   RawData[WakeUpKey_List[WakeUpKey_Index]] = TKCNT<<2;
+                   FilterDataDeal(WakeUpKey_List[WakeUpKey_Index]);
+                   differData = RawData[WakeUpKey_List[WakeUpKey_Index]]-BaseLine[WakeUpKey_List[WakeUpKey_Index]] ;
+                   SetFingerThresholdtmp = GetCurrFingerValue(WakeUpKey_List[WakeUpKey_Index]);
+                   if(differData >= (SetFingerThresholdtmp ))
+                   {
+                       TouchCnt[WakeUpKey_List[WakeUpKey_Index]]++;        
+                       SingleKeyFastScan_Flag = 1;       
+                   } 
+                   else
+                   {      
+                        BaseLine[WakeUpKey_List[WakeUpKey_Index]] =BaseLine[WakeUpKey_List[WakeUpKey_Index]]-(BaseLine[W
              -akeUpKey_List[WakeUpKey_Index]]>>5)+(RawData[WakeUpKey_List[WakeUpKey_Index]]>>5);          
- 582   2           }
- 583   1           #endif     
- 584   1      }
- 585          
- 586          /**************************************************
- 587          *函数名称：void SingleKeyFastScan(void)
- 588          *函数功能单按键快速扫描模式
- 589          *入口参数：void
- 590          *出口参数：void  
- 591          **************************************************/
- 592          void SingleKeyFastScan(void)
- 593          { 
- 594   1          #ifdef  TK_LowPowerMode 
- 595   1          unsigned char i;
- 596   1          int differData; 
- 597   1          int SetFingerThresholdtmp;
- 598   1          
- 599   1          SingleKeyFastScan_Flag = 0;  
- 600   1          
- 601   1          for(i=0;i<TK_WakeUpConfirmTouchCnt;i++)
- 602   1          {
- 603   2               TouchKey_LowPower_Scan();
- 604   2               while(TRIF == 0);
- 605   2               TRIF = 0;
- 606   2               RawData[WakeUpKey_List[WakeUpKey_Index]] = TKCNT<<2;
- 607   2               FilterDataDeal(WakeUpKey_List[WakeUpKey_Index]);
- 608   2               differData = RawData[WakeUpKey_List[WakeUpKey_Index]]-BaseLine[WakeUpKey_List[WakeUpKey_Index]] ;
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 11  
+                   }
+                   #endif     
+              }
+              #endif
+ 596          
+ 597          /**************************************************
+ 598          *函数名称：void SingleKeyFastScan(void)
+ 599          *函数功能单按键快速扫描模式
+ 600          *入口参数：void
+ 601          *出口参数：void  
+ 602          **************************************************/
+ 603          #if 0
+              void SingleKeyFastScan(void)
+              { 
+                  #ifdef  TK_LowPowerMode 
+                  unsigned char i;
+                  int differData; 
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 11  
 
- 609   2               SetFingerThresholdtmp = GetCurrFingerValue(WakeUpKey_List[WakeUpKey_Index]);
- 610   2               if(differData >= (SetFingerThresholdtmp ))
- 611   2               {   
- 612   3                  TouchCnt[WakeUpKey_List[WakeUpKey_Index]]++;  
- 613   3               }             
- 614   2          }
- 615   1          if(TouchCnt[WakeUpKey_List[WakeUpKey_Index]]>=TK_WakeUpConfirmTouchCnt)
- 616   1          {        
- 617   2               KeyFlag |= ((unsigned long int)1<<WakeUpKey_List[WakeUpKey_Index]);      
- 618   2                     TouchKey_QuitLowPowerMode();       
- 619   2          }
- 620   1          else
- 621   1          {
- 622   2              TouchCnt[WakeUpKey_List[WakeUpKey_Index]] = 0;;
- 623   2          }
- 624   1          #endif
- 625   1      }
- 626          
- 627          /**************************************************
- 628          *函数名称：void  SleepMode(void)
- 629          *函数功能睡眠模式
- 630          *入口参数：void
- 631          *出口参数：void  
- 632          **************************************************/
- 633          void  SleepMode(void)
- 634          {   
- 635   1          #ifdef  TK_LowPowerMode 
- 636   1          BTMCON |= 0x80;
- 637   1          BTM_WakeUpFlag = 0;
- 638   1          PCON |= 0x02;    //PCON的bit1 STOP位写1，配置MCU进入STOP模式
- 639   1          _nop_();         //至少需要8个_nop_()
- 640   1          _nop_();
- 641   1          _nop_();
- 642   1          _nop_();
- 643   1          _nop_();
- 644   1          _nop_();
- 645   1          _nop_();
- 646   1          _nop_();
- 647   1          #endif
- 648   1      }
- 649          
- 650          /**************************************************
- 651          *函数名称：void LowPower_Touchkey_Scan(void)
- 652          *函数功能低功耗模式TK扫描
- 653          *入口参数：void
- 654          *出口参数：void  
- 655          **************************************************/
- 656          void LowPower_Touchkey_Scan(void)
- 657          {                                         
- 658   1          #ifdef  TK_LowPowerMode 
- 659   1             //设置唤醒按键扫描
- 660   1          TouchKey_LowPower_Scan(); 
- 661   1      
- 662   1             //进入STOP模式                  
- 663   1          SleepMode();    
- 664   1                                         
- 665   1             //进行按键处理
- 666   1          TouchKey_LowPower_Dispose();      //检测按键
- 667   1          if( SingleKeyFastScan_Flag == 1)
- 668   1          {
- 669   2              SingleKeyFastScan();                 //若有按键信息进入单按键快速多次扫描确定按键是否真实信号。
- 670   2          }
-C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     04/27/2019 08:30:02 PAGE 12  
+                  int SetFingerThresholdtmp;
+                  
+                  SingleKeyFastScan_Flag = 0;  
+                  
+                  for(i=0;i<TK_WakeUpConfirmTouchCnt;i++)
+                  {
+                       //TouchKey_LowPower_Scan();
+                       while(TRIF == 0);
+                       TRIF = 0;
+                       RawData[WakeUpKey_List[WakeUpKey_Index]] = TKCNT<<2;
+                       FilterDataDeal(WakeUpKey_List[WakeUpKey_Index]);
+                       differData = RawData[WakeUpKey_List[WakeUpKey_Index]]-BaseLine[WakeUpKey_List[WakeUpKey_Index]] ;
+                       SetFingerThresholdtmp = GetCurrFingerValue(WakeUpKey_List[WakeUpKey_Index]);
+                       if(differData >= (SetFingerThresholdtmp ))
+                       {   
+                          TouchCnt[WakeUpKey_List[WakeUpKey_Index]]++;  
+                       }             
+                  }
+                  if(TouchCnt[WakeUpKey_List[WakeUpKey_Index]]>=TK_WakeUpConfirmTouchCnt)
+                  {        
+                       KeyFlag |= ((unsigned long int)1<<WakeUpKey_List[WakeUpKey_Index]);      
+                             //TouchKey_QuitLowPowerMode();       
+                  }
+                  else
+                  {
+                      TouchCnt[WakeUpKey_List[WakeUpKey_Index]] = 0;
+                  }
+                  #endif
+              }
+              #endif
+ 639          /**************************************************
+ 640          *函数名称：void  SleepMode(void)
+ 641          *函数功能睡眠模式
+ 642          *入口参数：void
+ 643          *出口参数：void  
+ 644          **************************************************/
+ 645          #if 0
+              void  SleepMode(void)
+              {   
+                  #ifdef  TK_LowPowerMode 
+                  BTMCON |= 0x80;
+                  BTM_WakeUpFlag = 0;
+                  PCON |= 0x02;    //PCON的bit1 STOP位写1，配置MCU进入STOP模式
+                  _nop_();         //至少需要8个_nop_()
+                  _nop_();
+                  _nop_();
+                  _nop_();
+                  _nop_();
+                  _nop_();
+                  _nop_();
+                  _nop_();
+                  #endif
+              }
+              #endif
+ 663          /**************************************************
+ 664          *函数名称：void LowPower_Touchkey_Scan(void)
+ 665          *函数功能低功耗模式TK扫描
+ 666          *入口参数：void
+ 667          *出口参数：void  
+ 668          **************************************************/
+ 669          #if 0
+              void LowPower_Touchkey_Scan(void)
+C51 COMPILER V9.59.0.0   S_TOUCHKEYCFG                                                     05/06/2019 20:56:46 PAGE 12  
 
- 671   1          if(LowPowerScan_Flag == 1)
- 672   1          {        
- 673   2              WakeUpKey_Index++; 
- 674   2              if(WakeUpKey_Index>=WakeUpKeyNum)
- 675   2              {
- 676   3                 WakeUpKey_Index = 0; 
- 677   3              }
- 678   2          }  
- 679   1      
- 680   1             // 用户BTM唤醒后的处理函数
- 681   1             Customer_BTM_Dispose();  
- 682   1                   
- 683   1          #endif    
- 684   1      }
+              {                                         
+                  #ifdef  TK_LowPowerMode 
+                     //设置唤醒按键扫描
+                  //TouchKey_LowPower_Scan(); 
+              
+                     //进入STOP模式                  
+                  //SleepMode();    
+                                                 
+                     //进行按键处理
+                  //TouchKey_LowPower_Dispose();           //检测按键
+                  if( SingleKeyFastScan_Flag == 1)
+                  {
+                      SingleKeyFastScan();                 //若有按键信息进入单按键快速多次扫描确定按键是否真实信号。
+                  }
+                  if(LowPowerScan_Flag == 1)
+                  {        
+                      WakeUpKey_Index++; 
+                      if(WakeUpKey_Index>=WakeUpKeyNum)
+                      {
+                         WakeUpKey_Index = 0; 
+                      }
+                  }  
+              
+                     // 用户BTM唤醒后的处理函数
+                     //Customer_BTM_Dispose();  
+                           
+                  #endif    
+              }
+              #endif
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1987    ----
+   CODE SIZE        =   1115    ----
    CONSTANT SIZE    =     98    ----
    XDATA SIZE       =    128    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----      34
+   DATA SIZE        =   ----      25
    IDATA SIZE       =      3    ----
    BIT SIZE         =      4    ----
 END OF MODULE INFORMATION.

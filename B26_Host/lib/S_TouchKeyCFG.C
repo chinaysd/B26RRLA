@@ -132,8 +132,8 @@ typedef enum
 
 #define      WakeUpKeyNum                      1                    //低功耗模式下扫描按键个数     
 #define      WakeUpKeyChannel                  0x00000200           //低功耗下扫描按键的对应通道
-#define      TK_SeepTimervSetting              BTM_TIMEBASE_125MS   //低功耗下按键之间的扫描间隔
-#define      TK_WakeUpConfirmTouchCnt          8 					//低功耗下确认按键次数
+#define      TK_SeepTimervSetting              BTM_TIMEBASE_15600US   //低功耗下按键之间的扫描间隔
+#define      TK_WakeUpConfirmTouchCnt          1 					//低功耗下确认按键次数
 										   	
 bit  LowPowerScan_Flag = 0;                                         //低功耗扫描标志
 bit  SingleKeyFastScan_Flag = 0;                                    //单按键快速扫描标志
@@ -141,9 +141,12 @@ bit  BTM_WakeUpFlag =0;
 unsigned    char    idata       WakeUpKey_List[WakeUpKeyNum];
 unsigned 	char 	idata  	    WakeUpKey_Index;
 unsigned 	char 	idata  	    WakeUpThenScanCount = 0; 
+#if 0
 extern void Customer_IntoLowPowerMode_Init(void);
 extern void Customer_QuitLowPowerMode_Init(void);
 extern void Customer_BTM_Dispose(void);
+
+#endif
 extern unsigned  long	int 	data 	  	KeyFlag;
 
 //**********************************************************************************
@@ -265,10 +268,12 @@ j
 *出口参数：unsigned char 
 *备注	 ：
 **************************************************/
+#if 1
 unsigned char  GetBaseLineAdjustValue(unsigned char i)
 {	
     return BaseLineAdjusttmp[i]; 
 }
+#endif
 /**************************************************
 *函数名称：unsigned char GetUpConfirmCnt(void)
 *函数功能：检测按键弹起次数
@@ -485,7 +490,7 @@ unsigned long int TouchKeyScan(void)
             }            
         }	       
         WakeUpThenScanCount++;
-        if(WakeUpThenScanCount>5)
+        if(WakeUpThenScanCount>3)       //5
         {
             WakeUpThenScanCount = 0;
             for(t=0; t<CurrentChannelMax; t++)  //初始化Filter滤波
@@ -506,6 +511,7 @@ unsigned long int TouchKeyScan(void)
 *入口参数：void
 *出口参数：void  
 **************************************************/
+#if 0
 void TouchKey_IntoLowPowerMode(void)
 {
     #ifdef  TK_LowPowerMode
@@ -513,9 +519,10 @@ void TouchKey_IntoLowPowerMode(void)
     WakeUp_Flag = 0;
     WakeUpKey_Index = 0;
     TK_IE1 = TK_IE1&(~0x10);    			//关闭TK中断
-    Customer_IntoLowPowerMode_Init();
+    //Customer_IntoLowPowerMode_Init();
     #endif
 }
+#endif
 
 /**************************************************
 *函数名称：void TouchKey_QuitLowPowerMode(void)
@@ -523,6 +530,7 @@ void TouchKey_IntoLowPowerMode(void)
 *入口参数：void
 *出口参数：void  
 **************************************************/
+#if 0
 void TouchKey_QuitLowPowerMode(void)
 {
     #ifdef  TK_LowPowerMode
@@ -531,16 +539,17 @@ void TouchKey_QuitLowPowerMode(void)
      TK_IE1 = TK_IE1|0x10;    			//使能触摸中断
      TKCR = 0x80|CurrentChannel[0]; 
      TRIG = 1; 
-     Customer_QuitLowPowerMode_Init();
+     //Customer_QuitLowPowerMode_Init();
     #endif
 }
-
+#endif
 /**************************************************
 *函数名称：void TouchKey_LowPower_Scan(void)
 *函数功能低功耗扫描
 *入口参数：void
 *出口参数：void  
 **************************************************/
+#if 0
 void TouchKey_LowPower_Scan(void)
 {
     #ifdef  TK_LowPowerMode
@@ -552,13 +561,14 @@ void TouchKey_LowPower_Scan(void)
     TRIG = 1;           
     #endif    
 }
-
+#endif
 /**************************************************
 *函数名称：void TouchKey_LowPower_Dispose(void)
 *函数功能低功耗扫描数据处理
 *入口参数：void
 *出口参数：void  
 **************************************************/
+#if 0
 void TouchKey_LowPower_Dispose(void)
 {  
      #ifdef  TK_LowPowerMode 
@@ -582,6 +592,7 @@ void TouchKey_LowPower_Dispose(void)
      }
      #endif     
 }
+#endif
 
 /**************************************************
 *函数名称：void SingleKeyFastScan(void)
@@ -589,6 +600,7 @@ void TouchKey_LowPower_Dispose(void)
 *入口参数：void
 *出口参数：void  
 **************************************************/
+#if 0
 void SingleKeyFastScan(void)
 { 
     #ifdef  TK_LowPowerMode 
@@ -600,7 +612,7 @@ void SingleKeyFastScan(void)
     
     for(i=0;i<TK_WakeUpConfirmTouchCnt;i++)
     {
-         TouchKey_LowPower_Scan();
+         //TouchKey_LowPower_Scan();
          while(TRIF == 0);
          TRIF = 0;
          RawData[WakeUpKey_List[WakeUpKey_Index]] = TKCNT<<2;
@@ -615,21 +627,22 @@ void SingleKeyFastScan(void)
     if(TouchCnt[WakeUpKey_List[WakeUpKey_Index]]>=TK_WakeUpConfirmTouchCnt)
     {        
          KeyFlag |= ((unsigned long int)1<<WakeUpKey_List[WakeUpKey_Index]);      
-		 TouchKey_QuitLowPowerMode();       
+		 //TouchKey_QuitLowPowerMode();       
     }
     else
     {
-        TouchCnt[WakeUpKey_List[WakeUpKey_Index]] = 0;;
+        TouchCnt[WakeUpKey_List[WakeUpKey_Index]] = 0;
     }
     #endif
 }
-
+#endif
 /**************************************************
 *函数名称：void  SleepMode(void)
 *函数功能睡眠模式
 *入口参数：void
 *出口参数：void  
 **************************************************/
+#if 0
 void  SleepMode(void)
 {   
     #ifdef  TK_LowPowerMode 
@@ -646,24 +659,25 @@ void  SleepMode(void)
     _nop_();
     #endif
 }
-
+#endif
 /**************************************************
 *函数名称：void LowPower_Touchkey_Scan(void)
 *函数功能低功耗模式TK扫描
 *入口参数：void
 *出口参数：void  
 **************************************************/
+#if 0
 void LowPower_Touchkey_Scan(void)
 {      					
     #ifdef  TK_LowPowerMode 
 	//设置唤醒按键扫描
-    TouchKey_LowPower_Scan(); 
+    //TouchKey_LowPower_Scan(); 
 
 	//进入STOP模式                  
-    SleepMode();    
+    //SleepMode();    
 	                            
 	//进行按键处理
-    TouchKey_LowPower_Dispose();  	   //检测按键
+    //TouchKey_LowPower_Dispose();  	   //检测按键
     if( SingleKeyFastScan_Flag == 1)
     {
         SingleKeyFastScan();		   //若有按键信息进入单按键快速多次扫描确定按键是否真实信号。
@@ -678,7 +692,8 @@ void LowPower_Touchkey_Scan(void)
     }	
 
 	// 用户BTM唤醒后的处理函数
-	Customer_BTM_Dispose();  
+	//Customer_BTM_Dispose();  
 	      
     #endif    
 }
+#endif

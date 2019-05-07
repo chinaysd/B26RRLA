@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   SYSTEM                                                            04/27/2019 08:30:01 PAGE 1   
+C51 COMPILER V9.59.0.0   SYSTEM                                                            05/07/2019 09:43:46 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SYSTEM
@@ -20,50 +20,54 @@ line level    source
   10          *描述:系统函数初始化
   11          *返回:无
   12          *******************************************************************************/
-  13          void System_Init(void)
-  14          {
-  15   1          TimeOutDet_Init();
-  16   1          uart_init(Fsys,BaudRate);
-  17   1          Uart1_Init(Fsys,BaudRate);
-  18   1          GPIO_INIT();
-  19   1          Timer0_Init();
-  20   1          lock = 1;
-  21   1          count_level = 15;
-  22   1          TouchKeyInit(); // 触控按键初始化
-  23   1          WDTCON |= 0x10;
-  24   1          EA = 1;
-  25   1      }
-  26          
-  27          /******************************************************************************
-  28          *作者:PETER
-  29          *日期:190308
-  30          *描述:系统处理函数
-  31          *返回:无
-  32          *******************************************************************************/
-  33          void System_Handle(void)
-  34          {
-  35   1             WDTCON |= 0x10;
-  36   1             Key_Scanf();
-  37   1             if(TimeOutDet_Check(&TimeOut_Para[0]))      
-  38   1             {
-  39   2                    TimeOut_Record( &TimeOut_Para[0],OnLine_Time);
-  40   2                    Uart1_ProtocolSend(0xfa,0xfb,TX_DATA);
-  41   2                    Uart2_ProtocolSend(0xfa,0xfb,TX1_DATA);
-  42   2             }
-  43   1      }
-  44          /******************************************************************************/
-  45          
-  46          
+  13          
+  14          
+  15          void System_Init(void)
+  16          {
+  17   1          TimeOutDet_Init();
+  18   1          uart_init(Fsys,BaudRate);
+  19   1          Uart1_Init(Fsys,BaudRate);
+  20   1          GPIO_INIT();
+  21   1          Timer0_Init();
+  22   1          lock = 1;
+  23   1          count_level = 15;
+  24   1          TouchKeyInit(); // 触控按键初始化
+  25   1          WDTCON |= 0x10;
+  26   1          EA = 1;
+  27   1      }
+  28          
+  29          /******************************************************************************
+  30          *作者:PETER
+  31          *日期:190308
+  32          *描述:系统处理函数
+  33          *返回:无
+  34          *******************************************************************************/
+  35          
+  36          
+  37          void System_Handle(void)
+  38          {
+  39   1             WDTCON |= 0x10;
+  40   1          Key_Scanf();
+  41   1             if(TimeOutDet_Check(&TimeOut_Para[0]))      
+  42   1             {
+  43   2                    TimeOut_Record( &TimeOut_Para[0],OnLine_Time);
+  44   2                    Uart1_ProtocolSend(0xfa,0xfb,TX_DATA);
+  45   2                    Uart2_ProtocolSend(0xfa,0xfb,TX1_DATA);
+  46   2             }
+  47   1      }
+  48          /******************************************************************************/
+  49          
+  50          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    113    ----
+C51 COMPILER V9.59.0.0   SYSTEM                                                            05/07/2019 09:43:46 PAGE 2   
+
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =     19    ----
-C51 COMPILER V9.59.0.0   SYSTEM                                                            04/27/2019 08:30:01 PAGE 2   
-
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

@@ -1,11 +1,13 @@
 #include "key.h"
 
-extern unsigned char count_level,lock,TX_DATA,key_press,RevString[UART2_REVBUF_SIZE];
+extern unsigned char count_level,TX_DATA,key_press,RevString[UART2_REVBUF_SIZE];
 extern unsigned int TX1_DATA;
-
-unsigned long int  get_key_data,RevGetData;
 extern unsigned long int MyKey_Buf_Data;
 
+
+unsigned long int  get_key_data,RevGetData;
+unsigned int u16TimeLock;
+unsigned char lock;
 /******************************************************************************
 *作者:PETER
 *日期:190308
@@ -14,7 +16,7 @@ extern unsigned long int MyKey_Buf_Data;
 *******************************************************************************/
 static void Key_Handle(void)
 {
-	if(get_key_data!=0)	//键按下
+	if(get_key_data != 0)	//键按下
 	{
 			MyKey_Buf_Data = get_key_data;
 			if((TK1_VALUE == MyKey_Buf_Data)&&(lock))
@@ -103,11 +105,12 @@ static void Key_Handle(void)
 	   }
 	else
 	{
+		MyKey_Buf_Data = 0x0000;
 		if(!key_press)
 		{
 			key_press = 1;
-		      TX_DATA = 0X55;
-		      TX1_DATA = 0X00;
+		    TX_DATA = 0X55;
+		    TX1_DATA = 0X00;
 		}
 	}
 	#if 1
@@ -134,6 +137,55 @@ static void Key_Handle(void)
 	#endif
 }
 
+void Lock_Handle(void)
+{
+	 static unsigned char LockTempFlag,LockTempCnt;
+	 if(0X4000 == MyKey_Buf_Data)
+	 {
+	 	if(!LockTempFlag)
+	 	{
+			LockTempFlag = 1;
+			++ LockTempCnt;
+		}
+		if(LockTempCnt & 0x01)
+		{
+			lock = 0;
+		}
+		else
+		{
+			lock = 1;
+		}
+	 	if(!lock)
+	 	{
+		   if(u16TimeLock < 3000)
+		   {
+		      u16TimeLock++;
+		   }
+		   else
+		   {
+		      u16TimeLock = 0;
+			  IO_RED_LIGHT_ON;
+		   }
+		}
+		else
+		{
+		   if(u16TimeLock < 3000)
+		   {
+		      u16TimeLock++;
+		   }
+		   else
+		   {
+		      u16TimeLock = 0;
+			  IO_RED_LIGHT_OFF;
+		   }
+		}
+	 }
+	 else
+	 {
+	 	LockTempFlag = 0;
+	 }
+}
+
 /******************************************************************************
 *作者:PETER
 *日期:190308
@@ -144,13 +196,17 @@ void Key_Scanf(void)
 {
 	WDTCON|=0x10;
 	if(SOCAPI_TouchKeyStatus&0x80) // 重要步骤 2: 触摸键扫描一轮标志，是否调用 TouchKeyScan() 一定要根据此标志位置起后
-      {
+    {
 		SOCAPI_TouchKeyStatus &= 0x7f;// 重要步骤 3:  清除标志位， 需要外部清除。
 		get_key_data = TouchKeyScan();// 按键数据处理函数
-		TouchKeyRestart();// 启动下一轮转换
+		TouchKeyRestart();//启动下一轮转换
 	}
 	Key_Handle();
 }
+
+
+
+
 
 
 

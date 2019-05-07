@@ -7,13 +7,12 @@
 #include "SensorMethod.h"
 #include "UART.H"
 #include "INIT.H"
-#include "bsp_io_data.h"
 #include "key.h"
 #include "TimeOut.h"
 
 
 
-#define   OnLine_Time     100
+#define   OnLine_Time     10//100
 
 
 

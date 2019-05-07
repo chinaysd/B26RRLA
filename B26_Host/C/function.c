@@ -11,14 +11,14 @@
 
 
 static unsigned char MOTRO_FLAG;
-extern unsigned char count_level,lock,TX_DATA;
+extern unsigned char count_level,TX_DATA;
 extern unsigned int TX1_DATA;
 
 unsigned long int MyKey_Buf_Data;
 
 unsigned char key_press,up_flag,down_flag,heat_red_flag,auto_close_heat,auto_close_mass,rev_flag;
 	             
-unsigned int motro_count0,motro_count1,auto_close_heat_cnt,auto_close_mass_cnt,u16TimeLock;
+unsigned int motro_count0,motro_count1,auto_close_heat_cnt,auto_close_mass_cnt;
 
 
 void Foot_Led_Cmd(void)   //Ω≈µ∆÷∏¡Ó
